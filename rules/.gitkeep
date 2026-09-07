@@ -1,0 +1,13 @@
+# Quality Rules Directory
+
+This directory contains quality rules organized by category.
+
+## Categories
+
+- standards/
+- patterns/
+- anti-patterns/
+- insights/
+- reviews/
+
+Run `claude-antislop init-memory` to initialize these directories.

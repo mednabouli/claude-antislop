@@ -1,0 +1,11 @@
+# Templates Directory
+
+This directory contains generated templates from repository scans.
+
+## Generated Templates
+
+- code-standards.md
+- patterns.md
+- anti-patterns.md
+
+Run `claude-antislop scan` to generate templates.
