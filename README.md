@@ -2,6 +2,12 @@
 
 **Local-first, per-developer quality layer that never touches your repo config.**
 
+![Status](https://img.shields.io/badge/status-beta-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![npm](https://img.shields.io/npm/v/claude-antislop)
+![Languages](https://img.shields.io/badge/languages-6-purple)
+![Shells](https://img.shields.io/badge/shells-bash%20%7C%20zsh%20%7C%20fish-cyan)
+
 Claude Anti-Slop is your personal code quality assistant that lives in your terminal. It learns from your codebase, enforces standards, and helps you write better code - all without requiring any changes to your repository.
 
 ## ✨ Features
