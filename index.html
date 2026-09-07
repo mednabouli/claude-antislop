@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Claude Anti-Slop is a local-first developer quality layer for Claude Code.">
+  <meta name="theme-color" content="#0f172a">
+  <title>Claude Anti-Slop — Local-first developer quality</title>
+  <style>
+    :root { --bg:#0b1120; --panel:#111a2e; --line:#24324f; --text:#e5edf9; --muted:#9aabc7; --blue:#65a8ff; --cyan:#5eead4; --green:#5de3a8; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:var(--bg); line-height:1.6; }
+    a { color:inherit; }
+    .wrap { max-width:1120px; padding:0 24px; margin:0 auto; }
+    header { position:sticky; top:0; z-index:10; backdrop-filter:blur(16px); background:rgba(11,17,32,.84); border-bottom:1px solid rgba(36,50,79,.7); }
+    nav { min-height:68px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:750; text-decoration:none; letter-spacing:-.02em; }
+    .mark { width:30px; height:30px; display:grid; place-items:center; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--cyan)); color:#07101f; font-size:16px; }
+    .navlinks { display:flex; gap:18px; align-items:center; color:var(--muted); font-size:14px; }
+    .navlinks a { text-decoration:none; }
+    .navlinks a:hover { color:var(--text); }
+    .hero { padding:104px 0 78px; background:radial-gradient(circle at 15% 0%,rgba(101,168,255,.18),transparent 31%),radial-gradient(circle at 85% 15%,rgba(94,234,212,.12),transparent 26%); border-bottom:1px solid var(--line); }
+    .eyebrow { display:inline-flex; border:1px solid rgba(101,168,255,.35); background:rgba(101,168,255,.09); color:#b8d5ff; padding:6px 10px; border-radius:100px; font-size:12px; font-weight:700; letter-spacing:.03em; }
+    h1 { max-width:800px; margin:20px 0; font-size:clamp(42px,6vw,74px); line-height:1.04; letter-spacing:-.055em; }
+    .lead { max-width:720px; color:var(--muted); font-size:19px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+    .button { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:0 17px; border-radius:8px; border:1px solid var(--line); text-decoration:none; font-size:14px; font-weight:700; }
+    .button.primary { color:#07111e; background:linear-gradient(135deg,var(--blue),var(--cyan)); border:0; }
+    .button.secondary { color:var(--text); background:rgba(17,26,46,.65); }
+    .proof { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:60px; }
+    .proof div { padding:16px; border:1px solid var(--line); border-radius:10px; background:rgba(17,26,46,.6); }
+    .proof strong { display:block; color:var(--green); font-size:22px; letter-spacing:-.04em; }
+    .proof span { color:var(--muted); font-size:12px; }
+    section { padding:88px 0; border-bottom:1px solid var(--line); }
+    .section-head { max-width:680px; margin-bottom:36px; }
+    h2 { margin:0 0 12px; font-size:34px; letter-spacing:-.04em; }
+    .section-head p { margin:0; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .card { padding:24px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+    .icon { color:var(--cyan); font-size:20px; }
+    h3 { margin:14px 0 8px; font-size:17px; letter-spacing:-.02em; }
+    .card p, .card li { color:var(--muted); font-size:14px; }
+    .card ul { padding-left:18px; margin:14px 0 0; }
+    .card li { margin:7px 0; }
+    .split { display:grid; grid-template-columns:1.1fr .9fr; gap:32px; align-items:start; }
+    pre { margin:0; padding:23px; overflow:auto; border:1px solid var(--line); background:#080d18; color:#cfddf6; border-radius:12px; font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+    .comment { color:#687995; } .cmd { color:var(--cyan); }
+    .principles { display:grid; gap:14px; }
+    .principle { padding:18px 20px; border-left:3px solid var(--blue); background:rgba(17,26,46,.6); border-radius:0 10px 10px 0; }
+    .principle strong { display:block; margin-bottom:4px; }
+    .principle span { color:var(--muted); font-size:14px; }
+    .cta { text-align:center; background:radial-gradient(circle at center,rgba(101,168,255,.18),transparent 54%); }
+    .cta p { max-width:600px; margin:0 auto; color:var(--muted); }
+    .cta .actions { justify-content:center; }
+    footer { padding:34px 0; color:var(--muted); font-size:13px; }
+    .foot { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    @media (max-width:780px) { .navlinks { display:none; } .hero { padding-top:74px; } .proof,.grid { grid-template-columns:1fr 1fr; } .split { grid-template-columns:1fr; } }
+    @media (max-width:520px) { .proof,.grid { grid-template-columns:1fr; } section { padding:65px 0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav>
+        <a class="brand" href="#top"><span class="mark">✦</span> Claude Anti-Slop</a>
+        <div class="navlinks"><a href="#features">Features</a><a href="#workflow">Workflow</a><a href="#install">Install</a><a href="https://github.com/mednabouli/claude-antislop">GitHub ↗</a></div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <span class="eyebrow">LOCAL-FIRST · CLAUDE CODE READY</span>
+        <h1>Make better code the default.</h1>
+        <p class="lead">Claude Anti-Slop is a per-developer quality layer for codebases: searchable standards, focused code checks, repository scanning, and lessons extracted from Git history—without changing repository configuration.</p>
+        <div class="actions">
+          <a class="button primary" href="#install">Get started</a>
+          <a class="button secondary" href="https://github.com/mednabouli/claude-antislop">View source on GitHub ↗</a>
+        </div>
+        <div class="proof">
+          <div><strong>Local</strong><span>Your data stays on your machine</span></div>
+          <div><strong>5 tools</strong><span>Available through MCP</span></div>
+          <div><strong>Smart search</strong><span>Fuzzy matching and scoring</span></div>
+          <div><strong>Git-aware</strong><span>Learn from real project history</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head"><h2>Designed for practical quality</h2><p>Keep the tools close to your workflow: use a CLI for repeatable checks or let Claude Code access the same capabilities through MCP.</p></div>
+        <div class="grid">
+          <article class="card"><div class="icon">⌕</div><h3>Memory search</h3><p>Find standards, patterns, anti-patterns, insights, and reviews with relevance scoring and fuzzy matching.</p><ul><li>Category filtering</li><li>0–100 relevance score</li><li>Typo-tolerant queries</li></ul></article>
+          <article class="card"><div class="icon">✓</div><h3>Code quality checks</h3><p>Run focused ESLint, TypeScript, and Prettier checks on supplied code, with structured results.</p><ul><li>Lint and type diagnostics</li><li>Formatting validation</li><li>Actionable error output</li></ul></article>
+          <article class="card"><div class="icon">◫</div><h3>Repository scanning</h3><p>Analyze a repository and generate reusable templates based on its technical shape and conventions.</p><ul><li>Stack detection</li><li>Pattern discovery</li><li>Template generation</li></ul></article>
+          <article class="card"><div class="icon">⌘</div><h3>Git learning</h3><p>Turn commit history into practical lessons and identify patterns in how your team builds and maintains software.</p><ul><li>Commit-type detection</li><li>Examples and counts</li><li>Confidence-aware insights</li></ul></article>
+          <article class="card"><div class="icon">▣</div><h3>Polished CLI</h3><p>Clear status, install, and diagnostic output with TTY-aware colors, spinners, and readable tables.</p><ul><li>NO_COLOR support</li><li>Human-readable durations</li><li>Useful next steps</li></ul></article>
+          <article class="card"><div class="icon">↔</div><h3>MCP integration</h3><p>Give Claude Code a local, controlled interface to your engineering standards and quality workflow.</p><ul><li>Memory search and write</li><li>Repository scan</li><li>Git learning</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="wrap split">
+        <div>
+          <div class="section-head"><h2>A local quality loop</h2><p>Use the project history and your own stored standards to guide decisions without centralizing private development data.</p></div>
+          <div class="principles">
+            <div class="principle"><strong>1. Capture what matters</strong><span>Store standards and recurring lessons in structured memory categories.</span></div>
+            <div class="principle"><strong>2. Check before shipping</strong><span>Validate formatting, linting, and types from one focused interface.</span></div>
+            <div class="principle"><strong>3. Learn from the codebase</strong><span>Scan repositories and analyze history to surface real conventions and trends.</span></div>
+          </div>
+        </div>
+        <pre><span class="comment"># Find an established standard</span>
+<span class="cmd">claude-antislop</span> memory-search \
+  --query "TypeScript strict mode" \
+  --category standards
+
+<span class="comment"># Validate a focused code snippet</span>
+<span class="cmd">claude-antislop</span> code-quality-check \
+  --language typescript \
+  --checks lint,typecheck,prettier
+
+<span class="comment"># Learn from recent project work</span>
+<span class="cmd">claude-antislop</span> learn-from-git --recent 30d</pre>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap split">
+        <div><div class="section-head"><h2>Start locally</h2><p>Clone the repository, install dependencies, and initialize personal memory when you are ready. The exact command surface should be treated as the repository implementation evolves.</p></div><a class="button primary" href="https://github.com/mednabouli/claude-antislop">Open repository ↗</a></div>
+        <pre><span class="comment"># Clone and install</span>
+<span class="cmd">git clone</span> https://github.com/mednabouli/claude-antislop.git
+<span class="cmd">cd</span> claude-antislop
+<span class="cmd">npm install</span>
+
+<span class="comment"># Verify the local installation</span>
+<span class="cmd">npx claude-antislop</span> --help</pre>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap"><h2>Build with fewer shortcuts.</h2><p>Use a local-first workflow that makes quality checks, team conventions, and project history available when they are useful.</p><div class="actions"><a class="button primary" href="https://github.com/mednabouli/claude-antislop">Explore Claude Anti-Slop ↗</a></div></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot"><span>Built by <a href="https://github.com/mednabouli">Med</a> in Montreal.</span><span><a href="https://github.com/mednabouli/claude-antislop">GitHub</a> · MIT License</span></div>
+  </footer>
+</body>
+</html>
