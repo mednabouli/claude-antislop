@@ -1,185 +1,24 @@
 #!/usr/bin/env node
-
-/**
- * Claude Anti-Slop CLI
- * 
- * Local-first, per-developer quality layer that never touches your repo config.
- */
-
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { ui } from './lib/ui.mjs';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const { version, description } = JSON.parse(
-  await fs.readFile(join(__dirname, '..', 'package.json'), 'utf-8')
-);
-
+const { version, description } = JSON.parse(await fs.readFile(join(__dirname, '..', 'package.json'), 'utf-8'));
 const program = new Command();
-
-program
-  .name('claude-antislop')
-  .version(version)
-  .description(description)
-  .showHelpAfterError();
-
-program
-  .command('install')
-  .description('Install the plugin with optional memory initialization')
-  .option('--init-memory', 'Initialize memory directory')
-  .option('--verbose', 'Show detailed output')
-  .action(async (options) => {
-    try {
-      const { install } = await import('./lib/install.mjs');
-      await install(options);
-    } catch (error) {
-      ui.error('Installation failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('status')
-  .description('Show plugin status and diagnostics')
-  .option('--verbose', 'Show detailed diagnostics')
-  .action(async (options) => {
-    try {
-      const { showStatus } = await import('./lib/status.mjs');
-      await showStatus(options);
-    } catch (error) {
-      ui.error('Status check failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('scan')
-  .description('Scan a repository and generate templates')
-  .option('--repo <path>', 'Repository path (default: current directory)')
-  .option('--output <path>', 'Output directory')
-  .option('--verbose', 'Show detailed output')
-  .action(async (options) => {
-    try {
-      const { scan } = await import('./lib/scan.mjs');
-      await scan(options);
-    } catch (error) {
-      ui.error('Scan failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('learn-from-git')
-  .description('Learn from git history and extract patterns')
-  .option('--repo <path>', 'Repository path (default: current directory)')
-  .option('--recent <period>', 'Time period (e.g., 30d, 3m, 1y)', '30d')
-  .option('--verbose', 'Show detailed output')
-  .action(async (options) => {
-    try {
-      const { learn } = await import('./lib/learn.mjs');
-      await learn(options);
-    } catch (error) {
-      ui.error('Learning failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('memory-search')
-  .description('Search memory with fuzzy matching')
-  .option('--query <text>', 'Search query')
-  .option('--category <name>', 'Category filter', 'all')
-  .option('--limit <number>', 'Maximum results', '5')
-  .option('--fuzzy', 'Use fuzzy matching', true)
-  .action(async (options) => {
-    try {
-      const { memorySearch } = await import('./lib/memory.mjs');
-      const result = await memorySearch(options);
-      console.log(JSON.stringify(result, null, 2));
-    } catch (error) {
-      ui.error('Memory search failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('memory-write')
-  .description('Write to memory with append/create modes')
-  .option('--category <name>', 'Category', 'standards')
-  .option('--filename <name>', 'Filename')
-  .option('--content <text>', 'Content to write')
-  .option('--append', 'Append to existing file')
-  .action(async (options) => {
-    try {
-      const { memoryWrite } = await import('./lib/memory.mjs');
-      const result = await memoryWrite(options);
-      console.log(JSON.stringify(result, null, 2));
-    } catch (error) {
-      ui.error('Memory write failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('code-quality-check')
-  .description('Run ESLint, TypeScript, and Prettier checks')
-  .option('--code <code>', 'Code to check')
-  .option('--language <lang>', 'Language', 'typescript')
-  .option('--checks <types>', 'Checks to run', 'lint,typecheck,prettier')
-  .action(async (options) => {
-    try {
-      const { codeQualityCheck } = await import('./lib/quality.mjs');
-      const checks = options.checks.split(',');
-      const result = await codeQualityCheck({ code: options.code, language: options.language, checks });
-      console.log(JSON.stringify(result, null, 2));
-    } catch (error) {
-      ui.error('Quality check failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('mcp-server')
-  .description('Start MCP server for Claude Code integration')
-  .action(async () => {
-    try {
-      const { startServer } = await import('../mcp/mcp-server-index.mjs');
-      await startServer();
-    } catch (error) {
-      ui.error('MCP server failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('init-memory')
-  .description('Initialize memory directory with categories')
-  .option('--force', 'Overwrite existing memory')
-  .option('--verbose', 'Show detailed output')
-  .action(async (options) => {
-    try {
-      const { initMemory } = await import('./lib/memory.mjs');
-      await initMemory(options);
-    } catch (error) {
-      ui.error('Memory initialization failed');
-      ui.error(error.message);
-      process.exit(1);
-    }
-  });
-
+program.name('claude-antislop').version(version).description(description).showHelpAfterError();
+program.command('install').description('Install plugin').option('--init-memory', 'Initialize memory').option('--verbose', 'Verbose').action(async (o) => { try { const { install } = await import('./lib/install.mjs'); await install(o); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('status').description('Show status').option('--verbose', 'Verbose').action(async (o) => { try { const { showStatus } = await import('./lib/status.mjs'); await showStatus(o); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('scan').description('Scan repo').option('--repo <path>', 'Repo path').option('--output <path>', 'Output').option('--verbose', 'Verbose').action(async (o) => { try { const { scan } = await import('./lib/scan.mjs'); await scan(o); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('learn-from-git').description('Learn from Git').option('--repo <path>', 'Repo').option('--recent <period>', 'Period', '30d').option('--verbose', 'Verbose').action(async (o) => { try { const { learn } = await import('./lib/learn.mjs'); await learn(o); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('memory-search').description('Search memory').option('--query <text>', 'Query').option('--category <name>', 'Category').option('--limit <n>', 'Limit', '5').option('--fuzzy', 'Fuzzy', true).action(async (o) => { try { const { memorySearch } = await import('./lib/memory.mjs'); console.log(JSON.stringify(await memorySearch(o), null, 2)); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('memory-write').description('Write memory').option('--category <name>', 'Category').option('--filename <name>', 'Filename').option('--content <text>', 'Content').option('--append', 'Append').action(async (o) => { try { const { memoryWrite } = await import('./lib/memory.mjs'); console.log(JSON.stringify(await memoryWrite(o), null, 2)); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('code-quality-check').description('Quality checks').option('--code <code>', 'Code').option('--language <lang>', 'Language').option('--checks <types>', 'Checks').action(async (o) => { try { const { codeQualityCheck } = await import('./lib/quality.mjs'); console.log(JSON.stringify(await codeQualityCheck({ code: o.code, language: o.language, checks: o.checks.split(',') }), null, 2)); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('mcp-server').description('Start MCP').action(async () => { try { const { startServer } = await import('../mcp/mcp-server-index.mjs'); await startServer(); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('init-memory').description('Init memory').option('--force', 'Force').option('--verbose', 'Verbose').action(async (o) => { try { const { initMemory } = await import('./lib/memory.mjs'); await initMemory(o); } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('completion').description('Shell completions').argument('<shell>', 'bash|zsh|fish|install').option('--path <dir>', 'Target dir').action(async (shell, o) => { try { const { getCompletionScript, installCompletion, getSupportedShells } = await import('./lib/completion.mjs'); const shells = getSupportedShells(); if (shell === 'install') { const target = o.path ? null : process.env.SHELL?.split('/').pop() || 'bash'; const r = await installCompletion(target || 'bash', o.path); ui.success(`Installed for ${r.shell}`); ui.info(`Destination: ${r.destination}`); console.log(); ui.info(r.restartHint); } else if (shells.includes(shell)) { console.log(await getCompletionScript(shell)); } else { ui.error(`Unsupported: ${shell}. Supported: ${shells.join(', ')}`); process.exit(1); } } catch (e) { ui.error(e.message); process.exit(1); } });
+program.command('wizard').description('Run first-run setup wizard').action(async () => { try { const { firstRunWizard } = await import('./lib/wizard.mjs'); await firstRunWizard(); } catch (e) { ui.error(e.message); process.exit(1); } });
 program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
+if (!process.argv.slice(2).length) program.outputHelp();
