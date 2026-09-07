@@ -1,0 +1,206 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative grid pattern -->
+  <g opacity="0.05">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="1200" height="630" fill="url(#grid)"/>
+  </g>
+  
+  <!-- Shield icon (AntiSlop symbol) -->
+  <g transform="translate(100, 180)" filter="url(#glow)">
+    <path d="M 0 0 L 100 0 L 100 80 C 100 140 50 180 50 180 C 50 180 0 140 0 80 Z" 
+          fill="url(#accentGradient)" 
+          stroke="#3b82f6" 
+          stroke-width="3"/>
+    <!-- Shield checkmark -->
+    <path d="M 30 90 L 45 105 L 70 75" 
+          stroke="#ffffff" 
+          stroke-width="8" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Main title -->
+  <text x="280" y="140" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+        font-size="56" 
+        font-weight="800" 
+        fill="#f8fafc" 
+        letter-spacing="-1">
+    Claude AntiSlop
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="280" y="200" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+        font-size="28" 
+        font-weight="400" 
+        fill="#94a3b8">
+    Eliminate AI-generated code slop
+  </text>
+  
+  <!-- Feature badges -->
+  <g transform="translate(280, 260)">
+    <!-- Badge 1 -->
+    <rect width="180" height="44" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+    <text x="90" y="28" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="18" 
+          font-weight="600" 
+          fill="#3b82f6" 
+          text-anchor="middle">
+      🔍 Pattern Detection
+    </text>
+    
+    <!-- Badge 2 -->
+    <rect x="200" width="160" height="44" rx="8" fill="#1e293b" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="280" y="28" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="18" 
+          font-weight="600" 
+          fill="#8b5cf6" 
+          text-anchor="middle">
+      🛡️ Security Checks
+    </text>
+    
+    <!-- Badge 3 -->
+    <rect x="380" width="180" height="44" rx="8" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+    <text x="470" y="28" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="18" 
+          font-weight="600" 
+          fill="#22c55e" 
+          text-anchor="middle">
+      ⚡ 1.5s / 1k files
+    </text>
+  </g>
+  
+  <!-- Code snippet box -->
+  <g transform="translate(280, 360)">
+    <rect width="820" height="180" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="2"/>
+    
+    <!-- Terminal dots -->
+    <circle cx="30" cy="30" r="6" fill="#ff5f56"/>
+    <circle cx="54" cy="30" r="6" fill="#ffbd2e"/>
+    <circle cx="78" cy="30" r="6" fill="#27c93f"/>
+    
+    <!-- Code text -->
+    <text x="30" y="80" 
+          font-family="'SF Mono', Monaco, 'Cascadia Code', monospace" 
+          font-size="16" 
+          fill="#8b949e">
+      $ claude-antislop check ./src
+    </text>
+    
+    <text x="30" y="115" 
+          font-family="'SF Mono', Monaco, 'Cascadia Code', monospace" 
+          font-size="16" 
+          fill="#ff7b72">
+      ❌ src/utils/helpers.ts:24:5
+    </text>
+    
+    <text x="50" y="140" 
+          font-family="'SF Mono', Monaco, 'Cascadia Code', monospace" 
+          font-size="14" 
+          fill="#ffa657">
+      [ERROR] Placeholder comment detected
+    </text>
+    
+    <text x="50" y="165" 
+          font-family="'SF Mono', Monaco, 'Cascadia Code', monospace" 
+          font-size="14" 
+          fill="#ffa657">
+      [WARN] Lazy variable name: data1, data2
+    </text>
+    
+    <text x="30" y="200" 
+          font-family="'SF Mono', Monaco, 'Cascadia Code', monospace" 
+          font-size="16" 
+          fill="#79c0ff">
+      Found 3 issues (2 errors, 1 warning) in 47 files
+    </text>
+  </g>
+  
+  <!-- Footer badges -->
+  <g transform="translate(280, 570)">
+    <!-- npm badge -->
+    <rect width="120" height="28" rx="4" fill="#cb3837"/>
+    <text x="60" y="19" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="14" 
+          font-weight="600" 
+          fill="#ffffff" 
+          text-anchor="middle">
+      npm
+    </text>
+    
+    <!-- TypeScript badge -->
+    <rect x="130" width="120" height="28" rx="4" fill="#3178c6"/>
+    <text x="190" y="19" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="14" 
+          font-weight="600" 
+          fill="#ffffff" 
+          text-anchor="middle">
+      TypeScript
+    </text>
+    
+    <!-- GitHub Actions badge -->
+    <rect x="260" width="140" height="28" rx="4" fill="#2088FF"/>
+    <text x="330" y="19" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="14" 
+          font-weight="600" 
+          fill="#ffffff" 
+          text-anchor="middle">
+      GitHub Actions
+    </text>
+    
+    <!-- License badge -->
+    <rect x="410" width="100" height="28" rx="4" fill="#f6d82b"/>
+    <text x="460" y="19" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="14" 
+          font-weight="600" 
+          fill="#000000" 
+          text-anchor="middle">
+      MIT
+    </text>
+    
+    <!-- GitHub URL -->
+    <text x="820" y="19" 
+          font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+          font-size="16" 
+          font-weight="500" 
+          fill="#94a3b8" 
+          text-anchor="end">
+      github.com/mednabouli/claude-antislop
+    </text>
+  </g>
+</svg>
