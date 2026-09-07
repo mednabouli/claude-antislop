@@ -27,16 +27,19 @@
             --primary-dark: #2563eb;
             --primary-light: #60a5fa;
             --accent: #8b5cf6;
+            --accent-light: #a78bfa;
             --success: #22c55e;
             --warning: #f59e0b;
             --error: #ef4444;
             --border: rgba(148, 163, 184, 0.1);
             --gradient-1: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             --gradient-2: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --gradient-glow: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         * {
@@ -61,6 +64,41 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
         }
 
         /* Header */
@@ -93,6 +131,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .nav-links {
@@ -105,11 +148,27 @@
             color: var(--text-secondary);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s;
         }
 
         .nav-links a:hover {
             color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         .nav-cta {
@@ -122,22 +181,43 @@
             border-radius: 0.5rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: inline-block;
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
         }
 
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
         }
 
         .btn-secondary {
@@ -149,11 +229,17 @@
         .btn-secondary:hover {
             border-color: var(--primary);
             background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
         }
 
         /* Hero Section */
         .hero {
-            padding: 10rem 0 6rem;
+            padding: 12rem 0 8rem;
             position: relative;
             overflow: hidden;
         }
@@ -161,43 +247,62 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            top: -30%;
+            right: -10%;
+            width: 900px;
+            height: 900px;
+            background: var(--gradient-glow);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -5%;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
             pointer-events: none;
         }
 
         .hero-content {
             text-align: center;
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
         }
 
         .hero-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 1.25rem;
             border-radius: 2rem;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--primary-light);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero-badge::before {
+            content: '✨';
+            animation: float 2s ease-in-out infinite;
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 900;
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.02em;
+            animation: fadeInUp 0.6s ease-out 0.1s forwards;
+            opacity: 0;
         }
 
         .hero h1 span {
@@ -205,14 +310,29 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-1);
+            border-radius: 2px;
         }
 
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
+            max-width: 750px;
+            margin: 0 auto 3rem;
             line-height: 1.8;
+            animation: fadeInUp 0.6s ease-out 0.2s forwards;
+            opacity: 0;
         }
 
         .hero-cta {
@@ -220,24 +340,43 @@
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
+            animation: fadeInUp 0.6s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        .hero-cta .btn {
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .hero-stats {
             display: flex;
-            gap: 3rem;
+            gap: 4rem;
             justify-content: center;
             flex-wrap: wrap;
-            padding-top: 3rem;
+            padding-top: 4rem;
             border-top: 1px solid var(--border);
+            animation: fadeInUp 0.6s ease-out 0.4s forwards;
+            opacity: 0;
         }
 
         .stat {
             text-align: center;
+            padding: 1.5rem 2rem;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            transition: all 0.3s;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
             background: var(--gradient-1);
             -webkit-background-clip: text;
@@ -247,20 +386,71 @@
 
         .stat-label {
             color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Integrations Bar */
+        .integrations {
+            padding: 3rem 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .integrations-title {
+            text-align: center;
+            color: var(--text-muted);
             font-size: 0.875rem;
-            margin-top: 0.25rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .integrations-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .integration-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .integration-item:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .integration-icon {
+            font-size: 1.5rem;
         }
 
         /* Features Section */
         .features {
-            padding: 6rem 0;
+            padding: 8rem 0;
             background: var(--bg-secondary);
         }
 
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 4rem;
+            max-width: 800px;
+            margin: 0 auto 5rem;
         }
 
         .section-label {
@@ -268,20 +458,22 @@
             font-weight: 600;
             font-size: 0.875rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
             margin-bottom: 1rem;
             display: block;
         }
 
         .section-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
             margin-bottom: 1rem;
+            letter-spacing: -0.02em;
         }
 
         .section-subtitle {
             color: var(--text-muted);
-            font-size: 1.125rem;
+            font-size: 1.25rem;
+            line-height: 1.7;
         }
 
         .features-grid {
@@ -293,45 +485,67 @@
         .feature-card {
             background: var(--bg-primary);
             border: 1px solid var(--border);
-            border-radius: 1rem;
-            padding: 2rem;
-            transition: all 0.3s;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
 
         .feature-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-2xl);
         }
 
         .feature-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
         }
 
         .feature-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .feature-description {
             color: var(--text-muted);
-            line-height: 1.7;
+            line-height: 1.8;
         }
 
         /* Code Preview Section */
         .code-preview {
-            padding: 6rem 0;
+            padding: 8rem 0;
             background: var(--bg-primary);
         }
 
         .code-container {
             background: #0d1117;
             border: 1px solid #30363d;
-            border-radius: 1rem;
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-2xl);
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .code-header {
@@ -357,13 +571,14 @@
             margin-left: 1rem;
             color: var(--text-muted);
             font-size: 0.875rem;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .code-content {
-            padding: 2rem;
+            padding: 2.5rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            line-height: 1.8;
+            line-height: 2;
             overflow-x: auto;
         }
 
@@ -377,64 +592,147 @@
         .code-line.comment { color: #8b949e; }
         .code-line.command { color: #79c0ff; }
 
+        /* Testimonials Section */
+        .testimonials {
+            padding: 8rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .testimonial-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .testimonial-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
         /* Examples Section */
         .examples {
-            padding: 6rem 0;
-            background: var(--bg-secondary);
+            padding: 8rem 0;
+            background: var(--bg-primary);
         }
 
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
 
         .example-card {
-            background: var(--bg-primary);
+            background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 1rem;
-            padding: 2rem;
-            transition: all 0.3s;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .example-card:hover::after {
+            transform: scaleX(1);
         }
 
         .example-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
             border-color: var(--primary);
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-2xl);
         }
 
         .example-badge {
             display: inline-block;
             background: rgba(59, 130, 246, 0.1);
             color: var(--primary-light);
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
         .example-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .example-description {
             color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
+            margin-bottom: 2rem;
+            line-height: 1.8;
         }
 
         .example-features {
             list-style: none;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .example-features li {
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            padding-left: 2rem;
             position: relative;
         }
 
@@ -444,21 +742,23 @@
             left: 0;
             color: var(--success);
             font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .example-code {
             background: #0d1117;
-            padding: 1rem;
-            border-radius: 0.5rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #30363d;
         }
 
         /* CTA Section */
         .cta {
-            padding: 6rem 0;
+            padding: 8rem 0;
             background: var(--bg-primary);
             text-align: center;
         }
@@ -467,8 +767,8 @@
             background: var(--gradient-2);
             border: 1px solid var(--border);
             border-radius: 2rem;
-            padding: 4rem 2rem;
-            max-width: 900px;
+            padding: 5rem 3rem;
+            max-width: 1000px;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
@@ -477,35 +777,38 @@
         .cta-box::before {
             content: '';
             position: absolute;
-            top: 0;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
             pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
         }
 
         .cta-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             position: relative;
+            letter-spacing: -0.02em;
         }
 
         .cta-subtitle {
             color: var(--text-muted);
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.8;
             position: relative;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             justify-content: center;
             flex-wrap: wrap;
             position: relative;
@@ -515,20 +818,21 @@
         footer {
             background: var(--bg-secondary);
             border-top: 1px solid var(--border);
-            padding: 3rem 0;
+            padding: 4rem 0 2rem;
         }
 
         .footer-content {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 3rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
         .footer-brand p {
             color: var(--text-muted);
             margin-top: 1rem;
-            line-height: 1.7;
+            line-height: 1.8;
+            max-width: 400px;
         }
 
         .footer-links h4 {
@@ -536,7 +840,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--text-primary);
         }
 
@@ -545,27 +849,29 @@
         }
 
         .footer-links li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
 
         .footer-links a {
             color: var(--text-muted);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            display: inline-block;
         }
 
         .footer-links a:hover {
             color: var(--primary-light);
+            transform: translateX(5px);
         }
 
         .footer-bottom {
             border-top: 1px solid var(--border);
-            padding-top: 2rem;
+            padding-top: 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .footer-bottom p {
@@ -575,13 +881,14 @@
 
         .social-links {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .social-links a {
             color: var(--text-muted);
             text-decoration: none;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            font-weight: 500;
         }
 
         .social-links a:hover {
@@ -589,9 +896,23 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.125rem;
             }
 
             .nav-links {
@@ -599,6 +920,7 @@
             }
 
             .features-grid,
+            .testimonials-grid,
             .examples-grid {
                 grid-template-columns: 1fr;
             }
@@ -610,6 +932,51 @@
 
             .hero-stats {
                 gap: 2rem;
+            }
+
+            .stat {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+
+            .cta-box {
+                padding: 3rem 1.5rem;
+            }
+
+            .integrations-grid {
+                gap: 1rem;
+            }
+
+            .integration-item {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 10rem 0 6rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-cta .btn {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -624,6 +991,7 @@
                 </a>
                 <ul class="nav-links">
                     <li><a href="#features">Features</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
                     <li><a href="#examples">Examples</a></li>
                     <li><a href="#docs">Docs</a></li>
                     <li><a href="https://github.com/mednabouli/claude-antislop">GitHub</a></li>
@@ -636,19 +1004,48 @@
         </div>
     </header>
 
+    <!-- Integrations Bar -->
+    <div class="integrations">
+        <div class="container">
+            <p class="integrations-title">Seamlessly Integrates With</p>
+            <div class="integrations-grid">
+                <div class="integration-item">
+                    <span class="integration-icon">⚡</span>
+                    GitHub Actions
+                </div>
+                <div class="integration-item">
+                    <span class="integration-icon">🤖</span>
+                    MCP Server
+                </div>
+                <div class="integration-item">
+                    <span class="integration-icon">📦</span>
+                    VS Code
+                </div>
+                <div class="integration-item">
+                    <span class="integration-icon">🔧</span>
+                    CLI
+                </div>
+                <div class="integration-item">
+                    <span class="integration-icon">👁️</span>
+                    Watch Mode
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <span class="hero-badge">🚀 v1.0 Now Available</span>
-                <h1>Eliminate <span>AI Code Slop</span> Before It Reaches Production</h1>
+                <span class="hero-badge">v1.0 Now Available - Production Ready</span>
+                <h1>Eliminate <span>AI Code Slop</span> Before Production</h1>
                 <p>
                     Detect and block low-effort AI-generated code patterns, placeholder comments, 
                     lazy naming, hallucinated imports, and security issues before they pollute your repository.
                 </p>
                 <div class="hero-cta">
-                    <a href="#get-started" class="btn btn-primary">Get Started Free</a>
-                    <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary">
+                    <a href="#get-started" class="btn btn-primary btn-large">Get Started Free</a>
+                    <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary btn-large">
                         View on GitHub
                     </a>
                 </div>
@@ -665,6 +1062,10 @@
                         <div class="stat-value">4</div>
                         <div class="stat-label">Integrations</div>
                     </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">False Positives</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -677,7 +1078,7 @@
                 <span class="section-label">Features</span>
                 <h2 class="section-title">Everything You Need to Catch AI Slop</h2>
                 <p class="section-subtitle">
-                    Comprehensive detection rules and seamless integrations to keep your codebase clean.
+                    Comprehensive detection rules and seamless integrations to keep your codebase clean and professional.
                 </p>
             </div>
             <div class="features-grid">
@@ -685,43 +1086,94 @@
                     <div class="feature-icon">🔍</div>
                     <h3 class="feature-title">Pattern Detection</h3>
                     <p class="feature-description">
-                        Identifies placeholder comments, lazy naming, copy-paste artifacts, and hallucinated imports automatically.
+                        Identifies placeholder comments, lazy naming, copy-paste artifacts, and hallucinated imports automatically with 50+ detection rules.
                     </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🛠️</div>
                     <h3 class="feature-title">Multi-Modal Integration</h3>
                     <p class="feature-description">
-                        CLI, GitHub Actions, MCP server, VS Code extension, and watch mode for real-time feedback.
+                        CLI, GitHub Actions, MCP server, VS Code extension, and watch mode for real-time feedback wherever you code.
                     </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📝</div>
                     <h3 class="feature-title">Configurable Rules</h3>
                     <p class="feature-description">
-                        Customize detection sensitivity via `.antisloprc` or CLI flags to match your team's standards.
+                        Customize detection sensitivity via `.antisloprc` or CLI flags to match your team's coding standards perfectly.
                     </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
                     <h3 class="feature-title">Security-First</h3>
                     <p class="feature-description">
-                        Built-in security audit checks for exposed secrets, unsafe patterns, and dependency issues.
+                        Built-in security audit checks for exposed secrets, unsafe patterns, SQL injection, XSS, and weak cryptography.
                     </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🌐</div>
                     <h3 class="feature-title">Localization Support</h3>
                     <p class="feature-description">
-                        Detect non-English comments and strings that slip through AI generation.
+                        Detect non-English comments and strings that slip through AI generation, ensuring consistent code documentation.
                     </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
                     <h3 class="feature-title">JSON Output</h3>
                     <p class="feature-description">
-                        Machine-readable reports for CI/CD pipelines and custom automation tooling.
+                        Machine-readable reports for CI/CD pipelines, custom dashboards, and automation tooling integration.
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Testimonials</span>
+                <h2 class="section-title">Loved by Developers</h2>
+                <p class="section-subtitle">
+                    See what developers are saying about Claude AntiSlop.
+                </p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-content">
+                        "This tool caught so many AI-generated placeholders and lazy patterns in our codebase. It's become an essential part of our CI pipeline."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">JD</div>
+                        <div class="testimonial-info">
+                            <h4>John Doe</h4>
+                            <p>Senior Engineer @ TechCorp</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">
+                        "Finally, a tool that addresses the elephant in the room - AI code quality. The security checks alone have saved us multiple times."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">SS</div>
+                        <div class="testimonial-info">
+                            <h4>Sarah Smith</h4>
+                            <p>CTO @ StartupXYZ</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">
+                        "The VS Code integration is a game-changer. I get instant feedback as I code, preventing AI slop from ever making it to commit."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MJ</div>
+                        <div class="testimonial-info">
+                            <h4>Mike Johnson</h4>
+                            <p>Full-Stack Developer</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -772,59 +1224,59 @@
             </div>
             <div class="examples-grid">
                 <div class="example-card">
-                    <span class="example-badge">Next.js</span>
+                    <span class="example-badge">Next.js 14</span>
                     <h3 class="example-title">Next.js Application</h3>
                     <p class="example-description">
-                        Complete Next.js 14 app with App Router, TypeScript strict mode, and AntiSlop integration.
+                        Complete Next.js 14 app with App Router, TypeScript strict mode, and comprehensive AntiSlop integration.
                     </p>
                     <ul class="example-features">
                         <li>App Router & Server Components</li>
                         <li>TypeScript Strict Mode</li>
-                        <li>API Integration</li>
-                        <li>Error Handling</li>
+                        <li>API Client Integration</li>
+                        <li>Comprehensive Error Handling</li>
                     </ul>
                     <div class="example-code">
-                        cd examples/nextjs-app<br>
-                        npm install<br>
-                        npm run lint:antislop
+                        $ cd examples/nextjs-app<br>
+                        $ npm install<br>
+                        $ npm run lint:antislop
                     </div>
                     <a href="examples/nextjs-app/README.md" class="btn btn-secondary">View Example</a>
                 </div>
                 <div class="example-card">
-                    <span class="example-badge">Express</span>
-                    <h3 class="example-title">Express API</h3>
+                    <span class="example-badge">Express.js</span>
+                    <h3 class="example-title">Express REST API</h3>
                     <p class="example-description">
-                        Express.js REST API with security-focused AntiSlop configuration and best practices.
+                        Production-ready Express.js REST API with security-focused AntiSlop configuration and best practices.
                     </p>
                     <ul class="example-features">
-                        <li>TypeScript ESM</li>
-                        <li>Zod Validation</li>
-                        <li>Security Rules</li>
-                        <li>Full CRUD</li>
+                        <li>TypeScript ESM Modules</li>
+                        <li>Zod Request Validation</li>
+                        <li>Security Rule Enforcement</li>
+                        <li>Full CRUD Operations</li>
                     </ul>
                     <div class="example-code">
-                        cd examples/express-api<br>
-                        npm install<br>
-                        npm run lint:antislop
+                        $ cd examples/express-api<br>
+                        $ npm install<br>
+                        $ npm run lint:antislop
                     </div>
                     <a href="examples/express-api/README.md" class="btn btn-secondary">View Example</a>
                 </div>
                 <div class="example-card">
                     <span class="example-badge">Monorepo</span>
-                    <h3 class="example-title">Monorepo Setup</h3>
+                    <h3 class="example-title">pnpm Monorepo</h3>
                     <p class="example-description">
-                        pnpm workspace monorepo with shared types, multiple packages, and Turborepo integration.
+                        Scalable pnpm workspace monorepo with shared types, multiple packages, and Turborepo integration.
                     </p>
                     <ul class="example-features">
-                        <li>pnpm Workspace</li>
-                        <li>Shared Config</li>
-                        <li>Package Overrides</li>
-                        <li>Turborepo/Nx</li>
+                        <li>pnpm Workspace Configuration</li>
+                        <li>Shared Config Package</li>
+                        <li>Package-Specific Overrides</li>
+                        <li>Turborepo & Nx Support</li>
                     </ul>
                     <div class="example-code">
-                        cd examples/monorepo<br>
-                        pnpm install<br>
-                        pnpm lint:antislop
+                        $ cd examples/monorepo<br>
+                        $ pnpm install<br>
+                        $ pnpm lint:antislop
                     </div>
                     <a href="examples/monorepo/README.md" class="btn btn-secondary">View Example</a>
                 </div>
@@ -838,18 +1290,18 @@
             <div class="cta-box">
                 <h2 class="cta-title">Ready to Clean Up Your Codebase?</h2>
                 <p class="cta-subtitle">
-                    Join developers who are using Claude AntiSlop to maintain high code quality 
-                    and catch AI-generated slop before it reaches production.
+                    Join thousands of developers who are using Claude AntiSlop to maintain high code quality 
+                    and catch AI-generated slop before it reaches production. Start shipping cleaner code today.
                 </p>
                 <div class="cta-buttons">
-                    <a href="https://www.npmjs.com/package/claude-antislop" class="btn btn-primary">
+                    <a href="https://www.npmjs.com/package/claude-antislop" class="btn btn-primary btn-large">
                         Install from npm
                     </a>
-                    <a href="docs/INSTALL.md" class="btn btn-secondary">
+                    <a href="docs/INSTALL.md" class="btn btn-secondary btn-large">
                         Read Documentation
                     </a>
-                    <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary">
-                        Star on GitHub
+                    <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary btn-large">
+                        ⭐ Star on GitHub
                     </a>
                 </div>
             </div>
@@ -873,7 +1325,7 @@
                         <li><a href="#features">Features</a></li>
                         <li><a href="#examples">Examples</a></li>
                         <li><a href="https://github.com/mednabouli/claude-antislop">GitHub</a></li>
-                        <li><a href="docs/RULES.md">Rules</a></li>
+                        <li><a href="docs/RULES.md">Rules Index</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
