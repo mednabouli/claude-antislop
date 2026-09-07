@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/mednabouli/claude-antislop#readme",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
     "commander": "^12.0.0",
     "fs-extra": "^11.2.0",
     "ora": "^8.0.0"
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@types/node": "^20.11.0",
     "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
     "typescript": "^5.3.3"
   },
   "engines": {
