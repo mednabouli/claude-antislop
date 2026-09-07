@@ -1,0 +1,11 @@
+{
+  "extends": "../../.antisloprc.json",
+  "rules": {
+    "require-type-annotations": "error",
+    "no-any-type": "error",
+    "no-console-log": "off"
+  },
+  "include": [
+    "src/**/*.{ts,tsx}"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/mednabouli/claude-antislop/main/templates/schema.json",
+  "rules": {
+    "no-placeholder-comments": "error",
+    "no-lazy-naming": "warn",
+    "no-hallucinated-imports": "error",
+    "no-copy-paste-artifacts": "error",
+    "no-hardcoded-secrets": "error",
+    "require-type-annotations": "error",
+    "no-any-type": "error"
+  },
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts"
+  ],
+  "output": "text",
+  "failOnError": true,
+  "colors": true
+}

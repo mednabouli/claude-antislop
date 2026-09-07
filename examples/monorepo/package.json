@@ -1,0 +1,16 @@
+{
+  "name": "monorepo-antislop-example",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r dev",
+    "lint": "pnpm -r lint",
+    "lint:antislop": "pnpm -r lint:antislop",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "claude-antislop": "^1.0.0"
+  }
+}
