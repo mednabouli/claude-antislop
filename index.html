@@ -1,190 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claude Anti-Slop - Local-first Code Quality Assistant</title>
-  <meta name="description" content="Your personal code quality assistant. Learns from your codebase, enforces standards, and helps you write better code - all without touching your repo config.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Claude Anti-Slop is a local-first developer quality layer with memory, automation, shell completion, and localized CLI messages.">
+  <title>Claude Anti-Slop — Local-first developer quality</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0f0f0f;--card:#1a1a1a;--text:#e0e0e0;--muted:#888;--accent:#00d4ff;--success:#00ff88;--warning:#ffaa00}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-    .container{max-width:1200px;margin:0 auto;padding:0 20px}
-    header{padding:80px 0 60px;text-align:center}
-    h1{font-size:3.5rem;font-weight:800;margin-bottom:20px;background:linear-gradient(135deg,var(--accent),var(--success));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .tagline{font-size:1.3rem;color:var(--muted);max-width:600px;margin:0 auto 30px}
-    .badge{display:inline-block;padding:8px 16px;background:var(--card);border-radius:20px;font-size:0.9rem;margin:10px 5px;border:1px solid #333}
-    .badge span{color:var(--accent)}
-    nav{display:flex;justify-content:center;gap:20px;margin-top:40px}
-    nav a{color:var(--text);text-decoration:none;padding:10px 20px;border-radius:8px;transition:all 0.2s}
-    nav a:hover{background:var(--card);color:var(--accent)}
-    section{padding:60px 0}
-    h2{font-size:2.2rem;margin-bottom:30px;text-align:center}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}
-    .card{background:var(--card);padding:30px;border-radius:16px;border:1px solid #2a2a2a;transition:transform 0.2s}
-    .card:hover{transform:translateY(-5px);border-color:var(--accent)}
-    .card h3{color:var(--accent);margin-bottom:15px;font-size:1.3rem}
-    .card p{color:var(--muted)}
-    .card code{background:#0f0f0f;padding:2px 8px;border-radius:4px;font-size:0.9em}
-    .feature-icon{font-size:2.5rem;margin-bottom:15px}
-    .commands{background:#0f0f0f;padding:40px;border-radius:16px;overflow-x:auto}
-    .commands pre{margin:0;font-family:'SF Mono',Monaco,'Courier New',monospace;font-size:0.95rem;line-height:1.8}
-    .commands .comment{color:#666}
-    .commands .cmd{color:var(--success)}
-    .commands .flag{color:var(--accent)}
-    .commands .output{color:var(--muted)}
-    .lang-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;margin-top:30px}
-    .lang-card{text-align:center;padding:20px;background:var(--card);border-radius:12px}
-    .lang-card .flag{font-size:2.5rem;margin-bottom:10px}
-    .lang-card .name{font-weight:600}
-    .cta{background:var(--card);padding:60px 0;border-radius:16px;margin:60px 0}
-    .cta-content{text-align:center}
-    .cta h2{margin-bottom:20px}
-    .cta p{color:var(--muted);margin-bottom:30px}
-    .btn{display:inline-block;padding:15px 40px;background:linear-gradient(135deg,var(--accent),var(--success));color:#000;text-decoration:none;font-weight:700;border-radius:12px;transition:transform 0.2s}
-    .btn:hover{transform:scale(1.05)}
-    .btn-secondary{background:transparent;border:2px solid var(--accent);color:var(--accent);margin-left:20px}
-    footer{padding:40px 0;text-align:center;color:var(--muted);border-top:1px solid #2a2a2a;margin-top:60px}
-    footer a{color:var(--accent);text-decoration:none}
-    @media(max-width:768px){h1{font-size:2.5rem}.grid{grid-template-columns:1fr}nav{flex-wrap:wrap}.btn-secondary{margin-left:0;margin-top:10px}}
+    :root{--ink:#080a0f;--panel:rgba(17,22,32,.75);--line:rgba(161,184,255,.16);--text:#f5f7ff;--muted:#9aa7c0;--cyan:#67e8f9;--violet:#a78bfa;--lime:#9dff7a;--orange:#ffbd69}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ink);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}.grid-bg,.aurora{position:fixed;inset:0;pointer-events:none;z-index:-2}.grid-bg{background-image:linear-gradient(rgba(129,151,209,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(129,151,209,.06) 1px,transparent 1px);background-size:46px 46px;mask-image:linear-gradient(to bottom,#000,transparent 82%)}.aurora{z-index:-3;background:radial-gradient(circle at 17% 8%,rgba(103,232,249,.18),transparent 28%),radial-gradient(circle at 80% 25%,rgba(167,139,250,.16),transparent 32%),radial-gradient(circle at 52% 87%,rgba(157,255,122,.08),transparent 28%);filter:blur(12px);animation:drift 15s ease-in-out infinite alternate}@keyframes drift{to{transform:scale(1.12) translate3d(1.5%,-1%,0)}}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}.brand{font-weight:820;letter-spacing:-.04em;font-size:1.15rem}.brand b{color:var(--cyan)}.navlinks{display:flex;gap:24px;color:var(--muted);font-size:.92rem}.navlinks a:hover{color:var(--text)}.pill,.button{display:inline-flex;align-items:center;gap:9px;border-radius:999px;border:1px solid var(--line)}.pill{padding:7px 12px;font-size:.76rem;color:#dce5ff;background:rgba(25,34,52,.5)}.pulse{height:7px;width:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 0 rgba(157,255,122,.7);animation:pulse 2s infinite}@keyframes pulse{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}.hero{padding:86px 0 72px;text-align:center}.eyebrow{display:inline-flex;margin-bottom:23px}.hero h1{margin:0 auto;max-width:930px;font-size:clamp(3.1rem,8vw,6.4rem);line-height:.96;letter-spacing:-.078em}.gradient{background:linear-gradient(100deg,var(--cyan),#f4f7ff 38%,var(--violet) 69%,var(--lime));background-size:210% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}@keyframes shine{to{background-position:210% center}}.hero p{max-width:670px;margin:26px auto 31px;color:var(--muted);font-size:clamp(1.02rem,2vw,1.23rem);line-height:1.7}.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}.button{padding:13px 20px;font-weight:750;transition:transform .2s,box-shadow .2s}.button.primary{background:linear-gradient(135deg,var(--cyan),var(--lime));color:#061013;border:0;box-shadow:0 12px 40px rgba(103,232,249,.22)}.button:hover{transform:translateY(-2px)}.button.secondary{background:rgba(17,22,32,.55);color:#dfe7fa}.terminal{margin:62px auto 0;width:min(850px,100%);text-align:left;border:1px solid rgba(147,197,253,.26);border-radius:19px;overflow:hidden;background:linear-gradient(145deg,rgba(21,29,43,.92),rgba(10,13,20,.92));box-shadow:0 28px 90px rgba(0,0,0,.43),0 0 90px rgba(103,232,249,.08);transform:perspective(1300px) rotateX(4deg);animation:float 5.5s ease-in-out infinite}@keyframes float{50%{transform:perspective(1300px) rotateX(1deg) translateY(-9px)}}.terminal-top{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;color:var(--muted);font:500 .78rem ui-monospace,SFMono-Regular,Menlo,monospace}.dot{height:9px;width:9px;border-radius:50%;background:#ff6b6b}.dot:nth-child(2){background:#ffd166}.dot:nth-child(3){background:#87e389}.terminal-title{margin-left:7px}.code{padding:25px 27px;min-height:252px;font:500 clamp(.78rem,1.5vw,.96rem)/1.9 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}.prompt{color:var(--lime)}.command{color:#f7fbff}.dim{color:#77839b}.cyan{color:var(--cyan)}.violet{color:var(--violet)}.typing{display:inline-block;border-right:2px solid var(--cyan);white-space:nowrap;overflow:hidden;vertical-align:bottom;animation:type 3.7s steps(36,end) infinite,blink .7s step-end infinite}@keyframes type{0%,20%{width:0}60%,100%{width:31ch}}@keyframes blink{50%{border-color:transparent}}.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:15px 0;color:#b9c5dc;background:rgba(11,15,23,.64)}.track{display:inline-block;animation:scroll 25s linear infinite}.track span{margin:0 30px;font-size:.83rem;letter-spacing:.12em;text-transform:uppercase}.track b{color:var(--cyan)}@keyframes scroll{to{transform:translateX(-50%)}}section{padding:96px 0}.kicker{color:var(--cyan);font:700 .77rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}.section-head{max-width:680px;margin-bottom:42px}.section-head h2{font-size:clamp(2.25rem,4vw,3.65rem);letter-spacing:-.055em;line-height:1.02;margin:12px 0 16px}.section-head p{margin:0;color:var(--muted);line-height:1.7}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--line);background:var(--line);border-radius:18px;overflow:hidden}.metric{background:rgba(13,18,27,.87);padding:28px}.metric strong{display:block;font-size:2.35rem;letter-spacing:-.06em;color:var(--cyan)}.metric span{color:var(--muted);font-size:.9rem}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{padding:27px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,rgba(25,31,45,.73),rgba(13,17,25,.78));position:relative;overflow:hidden;transition:transform .25s,border-color .25s}.card:before{content:"";position:absolute;inset:-120% 30% auto -20%;height:200%;background:linear-gradient(110deg,transparent,rgba(103,232,249,.12),transparent);transform:rotate(18deg);transition:transform .6s}.card:hover{transform:translateY(-5px);border-color:rgba(103,232,249,.55)}.card:hover:before{transform:translateX(180%) rotate(18deg)}.icon{font-size:1.7rem}.card h3{margin:17px 0 9px;font-size:1.13rem}.card p{color:var(--muted);font-size:.94rem;line-height:1.65;margin:0}.split{display:grid;grid-template-columns:1.12fr .88fr;gap:22px;align-items:stretch}.glass{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:30px}.list{display:grid;gap:18px}.list-row{display:flex;gap:13px;color:var(--muted)}.check{color:var(--lime);font-weight:900}.locale-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}.locale{padding:20px 8px;text-align:center;border:1px solid var(--line);border-radius:14px;background:rgba(18,24,35,.68);transition:transform .2s}.locale:hover{transform:translateY(-4px)}.locale em{font-style:normal;font-size:1.75rem;display:block;margin-bottom:8px}.locale span{font-size:.83rem;color:var(--muted)}.cta{padding:46px;border:1px solid rgba(103,232,249,.29);border-radius:22px;background:radial-gradient(circle at 20% 0,rgba(103,232,249,.14),transparent 35%),radial-gradient(circle at 80% 100%,rgba(167,139,250,.16),transparent 35%),rgba(16,20,30,.88);text-align:center}.cta h2{font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-.06em;margin:0 0 14px}.cta p{color:var(--muted);margin:0 0 25px}footer{padding:30px 0 45px;color:#6f7c94;font-size:.88rem;display:flex;justify-content:space-between;gap:20px}.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}.reveal.show{opacity:1;transform:none}@media(max-width:780px){.navlinks{display:none}.hero{padding-top:56px}.metrics,.cards{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.locale-grid{grid-template-columns:repeat(3,1fr)}.terminal{transform:none}.metric{padding:20px}.code{padding:20px;min-height:235px}}@media(max-width:480px){.metrics,.cards{grid-template-columns:1fr}.wrap{width:min(100% - 28px,1160px)}section{padding:70px 0}.hero h1{font-size:3.15rem}.cta{padding:32px 20px}footer{display:block}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Claude Anti-Slop 🚀</h1>
-      <p class="tagline">Local-first, per-developer quality layer that never touches your repo config.</p>
-      <div>
-        <div class="badge"><span>🔌</span> Zero-config</div>
-        <div class="badge"><span>🧠</span> Smart Memory</div>
-        <div class="badge"><span>🌍</span> 6 Languages</div>
-        <div class="badge"><span>🐚</span> Shell Completions</div>
-        <div class="badge"><span>🤖</span> JSON API</div>
-      </div>
-      <nav>
-        <a href="#features">Features</a>
-        <a href="#commands">Commands</a>
-        <a href="#languages">Languages</a>
-        <a href="https://github.com/mednabouli/claude-antislop">GitHub</a>
-      </nav>
-    </div>
-  </header>
+  <div class="aurora"></div><div class="grid-bg"></div>
+  <div class="wrap nav"><a class="brand" href="#top">Claude <b>Anti-Slop</b></a><div class="navlinks"><a href="#why">Why it matters</a><a href="#features">Features</a><a href="#automation">Automation</a><a href="https://github.com/mednabouli/claude-antislop">GitHub ↗</a></div><span class="pill"><i class="pulse"></i> Local-first</span></div>
+  <main id="top">
+    <section class="hero"><div class="wrap"><div class="pill eyebrow"><i class="pulse"></i> Your personal developer quality layer</div><h1>Less slop.<br><span class="gradient">More signal.</span></h1><p>Claude Anti-Slop learns your standards, remembers what matters, and brings code-quality guardrails to every terminal workflow—without changing your repository.</p><div class="actions"><a class="button primary" href="https://github.com/mednabouli/claude-antislop">View on GitHub ↗</a><a class="button secondary" href="#commands">See the CLI ↓</a></div><div class="terminal"><div class="terminal-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="terminal-title">claude-antislop — zsh</span></div><div class="code"><span class="prompt">$</span> <span class="command">claude-antislop wizard</span>
+<span class="dim">› Select your stack</span>  <span class="cyan">Next.js + TypeScript</span>
+<span class="dim">› Enable Git learning</span>  <span class="violet">yes</span>
+<span class="dim">› Install shell completion</span>  <span class="violet">yes</span>
 
-  <section id="features">
-    <div class="container">
-      <h2>Features</h2>
-      <div class="grid">
-        <div class="card">
-          <div class="feature-icon">🔌</div>
-          <h3>Zero-config Installation</h3>
-          <p>Works without modifying repo files. Install globally and start using immediately.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🧠</div>
-          <h3>Smart Memory</h3>
-          <p>Learns from your Git history and code patterns. Organizes knowledge into standards, patterns, and anti-patterns.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🌍</div>
-          <h3>Multi-language</h3>
-          <p>Supports English, French, Spanish, German, Chinese, and Japanese with automatic locale detection.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🐚</div>
-          <h3>Shell Completions</h3>
-          <p>Full Bash, Zsh, and Fish completions with context-aware suggestions for all commands.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🤖</div>
-          <h3>Automation-ready</h3>
-          <p>JSON output mode and quiet mode for scripting and CI/CD integration.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🎯</div>
-          <h3>Standards Enforcement</h3>
-          <p>Run lint, typecheck, and prettier checks on your code with detailed feedback.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">📊</div>
-          <h3>MCP Integration</h3>
-          <p>Built-in MCP server for seamless integration with Claude Code and other MCP clients.</p>
-        </div>
-        <div class="card">
-          <div class="feature-icon">🎨</div>
-          <h3>Interactive Wizard</h3>
-          <p>First-run setup wizard guides you through stack selection, locale, and feature configuration.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<span class="prompt">✓</span> <span class="cyan">Memory initialized</span>
+<span class="prompt">✓</span> <span class="cyan">Completion installed for zsh</span>
+<span class="prompt">✓</span> <span class="cyan">Setup complete</span>
 
-  <section id="commands">
-    <div class="container">
-      <h2>Quick Start</h2>
-      <div class="commands">
-        <pre><span class="comment"># Install globally</span>
-<span class="cmd">npm install -g claude-antislop</span>
+<span class="prompt">$</span> <span class="typing">claude-antislop memory-search --query "testing"</span></div></div></div></section>
+    <div class="marquee"><div class="track"><span><b>✦</b> Local-first</span><span><b>✦</b> Repository-safe</span><span><b>✦</b> Git-aware memory</span><span><b>✦</b> JSON automation</span><span><b>✦</b> Bash · Zsh · Fish</span><span><b>✦</b> Six languages</span><span><b>✦</b> Local-first</span><span><b>✦</b> Repository-safe</span><span><b>✦</b> Git-aware memory</span><span><b>✦</b> JSON automation</span><span><b>✦</b> Bash · Zsh · Fish</span><span><b>✦</b> Six languages</span></div></div>
+    <section id="why"><div class="wrap"><div class="section-head reveal"><div class="kicker">Why Claude Anti-Slop</div><h2>Quality context that follows the developer.</h2><p>Keep your conventions and lessons learned in local memory, then surface them during scanning, reviews, quality checks, and automation.</p></div><div class="metrics reveal"><div class="metric"><strong>0</strong><span>repository files modified</span></div><div class="metric"><strong>5</strong><span>knowledge categories</span></div><div class="metric"><strong>3</strong><span>supported shells</span></div><div class="metric"><strong>6</strong><span>localized CLI languages</span></div></div></div></section>
+    <section id="features"><div class="wrap"><div class="section-head reveal"><div class="kicker">Built for flow</div><h2>Everything your terminal workflow needs.</h2><p>Practical developer tooling with a local-first model: predictable in scripts, helpful in interactive sessions.</p></div><div class="cards"><article class="card reveal"><div class="icon">🧠</div><h3>Project memory</h3><p>Search, write, and organize standards, patterns, anti-patterns, insights, and reviews.</p></article><article class="card reveal"><div class="icon">🔎</div><h3>Repository scanning</h3><p>Inspect a codebase and generate reusable context for standards and conventions.</p></article><article class="card reveal"><div class="icon">🌱</div><h3>Git learning</h3><p>Extract useful patterns from recent Git history without changing project configuration.</p></article><article class="card reveal"><div class="icon">🐚</div><h3>Shell completion</h3><p>Context-aware suggestions for Bash, Zsh, and Fish—commands, flags, values, and paths.</p></article><article class="card reveal"><div class="icon">🤖</div><h3>Automation mode</h3><p>Stable `--json` responses and quiet mode make it straightforward to embed in scripts and CI.</p></article><article class="card reveal"><div class="icon">🌍</div><h3>Localized CLI</h3><p>Human-friendly messaging in English, French, Spanish, German, Chinese, and Japanese.</p></article></div></div></section>
+    <section id="commands"><div class="wrap split"><div class="glass reveal"><div class="kicker">Up in minutes</div><h2 style="font-size:2.5rem;letter-spacing:-.055em;margin:12px 0 22px">One tool. Your workflow.</h2><div class="list"><div class="list-row"><b class="check">✓</b><span>Run the first-use wizard to configure stack, language, memory, and completion.</span></div><div class="list-row"><b class="check">✓</b><span>Scan repositories and learn conventions from version-control history.</span></div><div class="list-row"><b class="check">✓</b><span>Use memory and code-quality checks from a terminal or MCP client.</span></div></div></div><div class="terminal reveal" style="margin:0;transform:none;animation:none"><div class="terminal-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="terminal-title">quick start</span></div><div class="code"><span class="dim"># Install and configure</span>
+<span class="prompt">$</span> <span class="command">npm install -g claude-antislop</span>
+<span class="prompt">$</span> <span class="command">claude-antislop wizard</span>
 
-<span class="comment"># Run the interactive setup wizard</span>
-<span class="cmd">claude-antislop wizard</span>
+<span class="dim"># Inspect a repository</span>
+<span class="prompt">$</span> <span class="command">claude-antislop scan --repo .</span>
 
-<span class="comment"># Check status</span>
-<span class="cmd">claude-antislop status</span>
-
-<span class="comment"># Scan your repository</span>
-<span class="cmd">claude-antislop scan --repo ./my-project</span>
-
-<span class="comment"># Learn from Git history</span>
-<span class="cmd">claude-antislop learn-from-git --recent 30d</span>
-
-<span class="comment"># Search memory</span>
-<span class="cmd">claude-antislop memory-search --query "error handling"</span>
-
-<span class="comment"># Install shell completion</span>
-<span class="cmd">claude-antislop completion install</span>
-
-<span class="comment"># Use in French</span>
-<span class="cmd">claude-antislop status --locale fr</span>
-
-<span class="comment"># JSON output for automation</span>
-<span class="cmd">claude-antislop status --json</span></pre>
-      </div>
-    </div>
-  </section>
-
-  <section id="languages">
-    <div class="container">
-      <h2>Supported Languages</h2>
-      <p style="text-align:center;color:var(--muted);margin-bottom:30px;">Claude Anti-Slop speaks your language with full CLI localization.</p>
-      <div class="lang-grid">
-        <div class="lang-card"><div class="flag">🇺🇸</div><div class="name">English</div></div>
-        <div class="lang-card"><div class="flag">🇫🇷</div><div class="name">Franç¹¹ais</div></div>
-        <div class="lang-card"><div class="flag">🇪🇸</div><div class="name">Españ¹¹²l</div></div>
-        <div class="lang-card"><div class="flag">🇩🇪</div><div class="name">Deutsch</div></div>
-        <div class="lang-card"><div class="flag">🇨🇳</div><div class="name">中文</div></div>
-        <div class="lang-card"><div class="flag">🇯🇵</div><div class="name">日本語</div></div>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <div class="container">
-      <div class="cta">
-        <div class="cta-content">
-          <h2>Ready to get started?</h2>
-          <p>Install Claude Anti-Slop and improve your code quality today.</p>
-          <a href="https://github.com/mednabouli/claude-antislop" class="btn">View on GitHub</a>
-          <a href="https://www.npmjs.com/package/claude-antislop" class="btn btn-secondary">npm install</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <p>Built with ❤️ for developers who care about code quality.</p>
-      <p style="margin-top:10px"><a href="https://github.com/mednabouli/claude-antislop">GitHub</a> · <a href="https://github.com/mednabouli/claude-antislop/tree/main/docs">Documentation</a></p>
-    </div>
-  </footer>
+<span class="dim"># Script it</span>
+<span class="prompt">$</span> <span class="command">claude-antislop status <span class="cyan">--json</span></span></div></div></div></section>
+    <section id="automation"><div class="wrap"><div class="section-head reveal"><div class="kicker">Designed for automation</div><h2>Human-friendly. Machine-readable.</h2><p>Keep terminal feedback clear for people and turn on JSON output when your workflow needs dependable structured data.</p></div><div class="split"><div class="terminal reveal" style="margin:0;transform:none;animation:none"><div class="terminal-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="terminal-title">automation</span></div><div class="code"><span class="prompt">$</span> <span class="command">claude-antislop status <span class="cyan">--json</span></span>
+{
+  <span class="violet">"success"</span>: true,
+  <span class="violet">"message"</span>: <span class="cyan">"Status check complete"</span>,
+  <span class="violet">"data"</span>: { <span class="violet">"active"</span>: true }
+}</div></div><div class="glass reveal"><div class="kicker">Global by default</div><h2 style="font-size:2.3rem;letter-spacing:-.05em;margin:12px 0 18px">Speak your language.</h2><p style="color:var(--muted);line-height:1.7;margin:0 0 25px">Use `--locale` per command, save a preference in the wizard, or let your shell environment select the language.</p><div class="locale-grid"><div class="locale"><em>🇺🇸</em><span>English</span></div><div class="locale"><em>🇫🇷</em><span>Français</span></div><div class="locale"><em>🇪🇸</em><span>Español</span></div><div class="locale"><em>🇩🇪</em><span>Deutsch</span></div><div class="locale"><em>🇨🇳</em><span>中文</span></div><div class="locale"><em>🇯🇵</em><span>日本語</span></div></div></div></div></div></section>
+    <section><div class="wrap"><div class="cta reveal"><div class="kicker">Start building signal</div><h2>Keep the good parts.<br><span class="gradient">Reject the slop.</span></h2><p>Set up your personal code-quality layer in one interactive terminal session.</p><div class="actions"><a class="button primary" href="https://github.com/mednabouli/claude-antislop">Get Claude Anti-Slop ↗</a><a class="button secondary" href="https://github.com/mednabouli/claude-antislop/tree/main/docs">Read the docs ↗</a></div></div></div></section>
+  </main>
+  <footer class="wrap"><span>Claude Anti-Slop · Local-first developer quality</span><span><a href="https://github.com/mednabouli/claude-antislop">GitHub</a> · MIT License</span></footer>
+  <script>const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('show');observer.unobserve(entry.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));</script>
 </body>
 </html>
