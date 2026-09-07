@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/mednabouli/claude-antislop/main/templates/schema.json",
+  "rules": {
+    "no-placeholder-comments": "error",
+    "no-lazy-naming": "error",
+    "no-hallucinated-imports": "error",
+    "no-copy-paste-artifacts": "error",
+    "no-todo-comments": "error",
+    "no-fixme-comments": "error",
+    "require-type-annotations": "error",
+    "no-any-type": "error",
+    "no-console-log": "error",
+    "no-debugger": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-implicit-any": "error",
+    "max-function-length": ["error", { "max": 30 }],
+    "max-params": ["error", { "max": 3 }],
+    "complexity": ["error", { "max": 10 }]
+  },
+  "exclude": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/*.min.js",
+    "**/vendor/**"
+  ],
+  "output": "text",
+  "failOnError": true,
+  "failOnWarning": true,
+  "colors": true,
+  "verbose": true,
+  "security": {
+    "checkSecrets": true,
+    "checkUnsafePatterns": true,
+    "checkDependencies": true
+  }
+}
