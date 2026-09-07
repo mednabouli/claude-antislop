@@ -1,0 +1,83 @@
+name: Performance Benchmarks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cli/**'
+      - 'rules/**'
+      - 'scripts/benchmark.js'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'cli/**'
+      - 'rules/**'
+      - 'scripts/benchmark.js'
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Benchmark project (small-app, medium-app, large-monorepo)'
+        required: false
+        default: 'medium-app'
+        type: choice
+        options:
+          - small-app
+          - medium-app
+          - large-monorepo
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build project
+        run: pnpm build
+      
+      - name: Generate benchmark fixtures
+        run: node scripts/generate-benchmarks.js
+      
+      - name: Run benchmarks
+        run: node scripts/benchmark.js --report
+        env:
+          NODE_OPTIONS: '--max-old-space-size=1024'
+      
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-report
+          path: benchmark-report.json
+          retention-days: 30
+      
+      - name: Check performance budget
+        run: node scripts/check-budget.js
+        continue-on-error: true
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('benchmark-report.json', 'utf8'));
+            
+            const summary = report.benchmarks.map(b => 
+              `**${b.project}**: ${b.coldStart.toFixed(0)}ms (${b.files} files)`
+            ).join('\n');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 Performance Benchmarks\n\n${summary}\n\nFull report: [benchmark-report.json](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}/artifacts/${context.runId})`
+            })
