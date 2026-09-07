@@ -4,7 +4,6 @@
 
 ![Status](https://img.shields.io/badge/status-beta-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![npm](https://img.shields.io/npm/v/claude-antislop)
 ![Languages](https://img.shields.io/badge/languages-6-purple)
 ![Shells](https://img.shields.io/badge/shells-bash%20%7C%20zsh%20%7C%20fish-cyan)
 
