@@ -1,0 +1,25 @@
+#compdef claude-antislop
+_claude_antislop() {
+  local -a commands categories checks periods
+  commands=('install:Install the plugin' 'status:Show status' 'scan:Scan a repository' 'learn-from-git:Learn from Git' 'memory-search:Search memory' 'memory-write:Write to memory' 'code-quality-check:Run quality checks' 'mcp-server:Start MCP server' 'init-memory:Initialize memory' 'completion:Print/install completions')
+  categories=(all standards patterns anti-patterns insights reviews)
+  checks=(lint typecheck prettier)
+  periods=(1d 7d 14d 30d 60d 90d 3m 6m 1y)
+  _arguments -C '(-h --help)'{-h,--help}'[Show help]' '(-V --version)'{-V,--version}'[Show version]' '1:command:->command' '*::argument:->args'
+  case $state in
+    command) _describe -t commands 'claude-antislop command' commands ;;
+    args)
+      case $words[2] in
+        install) _arguments '--init-memory[Initialize memory]' '--verbose[Detailed output]' ;;
+        status) _arguments '--verbose[Detailed diagnostics]' ;;
+        scan) _arguments '--repo[Repository path]:directory:_files -/' '--output[Output directory]:directory:_files -/' '--verbose[Detailed output]' ;;
+        learn-from-git) _arguments '--repo[Repository path]:directory:_files -/' '--recent[Period]:period:($periods)' '--verbose[Detailed output]' ;;
+        memory-search) _arguments '--query[Search query]:query:' '--category[Category]:category:($categories)' '--limit[Maximum results]:number:' '--fuzzy[Use fuzzy matching]' ;;
+        memory-write) _arguments '--category[Category]:category:(standards patterns anti-patterns insights reviews)' '--filename[Filename]:file:_files' '--content[Content]:content:' '--append[Append to existing]' ;;
+        code-quality-check) _arguments '--code[Code]:code:' '--language[Language]:language:(javascript typescript)' '--checks[Checks]:checks:($checks)' ;;
+        init-memory) _arguments '--force[Overwrite]' '--verbose[Detailed output]' ;;
+        completion) _arguments '1:shell:(bash zsh fish install)' '--path[Directory]:directory:_files -/' ;;
+      esac ;;
+  esac
+}
+_claude_antislop "$@"
