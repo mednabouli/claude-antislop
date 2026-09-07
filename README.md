@@ -1,286 +1,254 @@
-# Claude Anti-Slop
+# Claude Anti-Slop 🚀
 
-> Local-first, per-developer quality layer that never touches your repo config.
+**Local-first, per-developer quality layer that never touches your repo config.**
 
-**Claude Anti-Slop** is a developer productivity toolkit that runs entirely on your machine. It provides intelligent code analysis, pattern detection, and quality enforcement through a polished CLI and MCP (Model Context Protocol) integration with Claude Code.
+Claude Anti-Slop is your personal code quality assistant that lives in your terminal. It learns from your codebase, enforces standards, and helps you write better code - all without requiring any changes to your repository.
 
-## Features
+## ✨ Features
 
-### 🔍 Smart Memory Search
-- **Fuzzy matching** for better recall (finds "TypeSript" when searching for "TypeScript")
-- **Relevance scoring** (0-100%) with category filtering
-- **5 categories**: standards, patterns, anti-patterns, insights, reviews
-- **Append/create modes** for flexible memory management
+- 🔌 **Zero-config installation** - Works without modifying repo files
+- 🧠 **Smart memory** - Learns from your Git history and code patterns
+- 🌍 **Multi-language** - English, French, Spanish, German, Chinese, Japanese
+- 🐚 **Shell completions** - Bash, Zsh, and Fish support
+- 🤖 **Automation-ready** - JSON output mode for scripting
+- 🎯 **Standards enforcement** - Lint, typecheck, and prettier checks
+- 📊 **MCP integration** - Works with Claude Code and other MCP clients
 
-### 📊 Code Quality Checks
-- **ESLint** integration for linting
-- **TypeScript** type checking
-- **Prettier** formatting validation
-- **Auto-fix suggestions** with one-command fixes
-- **Temp file cleanup** with guaranteed cleanup on errors
-
-### 📈 Repository Analysis
-- **Full scan integration** with template generation
-- **Pattern detection** across 10 commit types:
-  - Conventional commits
-  - Feature development
-  - Bug fixes
-  - Refactoring
-  - Documentation
-  - Performance improvements
-  - Testing
-  - Security improvements
-  - Dependency updates
-  - Hotfixes
-
-### 🎯 Git Learning
-- **Lesson extraction** from commit history
-- **Pattern detection** with confidence scoring
-- **Insight generation** for development practices
-- **Actionable recommendations** based on detected patterns
-
-### 💻 Polished CLI
-- **Consistent terminal UI** with ANSI colors
-- **Spinners and progress indicators**
-- **Compact tables** for diagnostics
-- **Human-readable output** (file sizes, durations)
-- **NO_COLOR support** for CI/CD environments
-
-## Installation
+## 🚀 Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/mednabouli/claude-antislop.git
-cd claude-antislop
+# Install globally
+npm install -g claude-antislop
 
-# Install dependencies
-npm install
-
-# Install the CLI globally (optional)
-npm install -g .
-
-# Or run locally
-npx claude-antislop --help
-```
-
-### Quick Start
-
-```bash
-# Initialize memory (optional)
-claude-antislop install --init-memory
+# Run the interactive setup wizard
+claude-antislop wizard
 
 # Check status
 claude-antislop status
 
-# Personalize with your repo
-claude-antislop scan --repo <your-repo>
-
-# Learn from git history
-claude-antislop learn-from-git --recent 30d
+# Scan your repository
+claude-antislop scan --repo ./my-project
 ```
 
-## Usage
+## 📚 Documentation
 
-### CLI Commands
+| Guide | Description |
+|-------|-------------|
+| [Installation](docs/INSTALL.md) | Full installation guide |
+| [Usage](docs/USAGE.md) | Command reference and examples |
+| [CLI Reference](docs/CLI.md) | Complete CLI documentation |
+| [Shell Completion](docs/SHELL_COMPLETION.md) | Bash, Zsh, Fish setup |
+| [First-Run Wizard](docs/WIZARD.md) | Interactive setup guide |
+| [JSON Output](docs/JSON_OUTPUT.md) | Automation and scripting |
+| [Localization](docs/LOCALIZATION.md) | Multi-language support |
+| [MCP Server](docs/MCP.md) | MCP integration guide |
 
-| Command | Description |
-|---------|-------------|
-| `install` | Install the plugin with optional memory initialization |
-| `status` | Show plugin status and diagnostics |
-| `scan` | Scan a repository and generate templates |
-| `learn-from-git` | Learn from git history and extract patterns |
-| `memory-search` | Search memory with fuzzy matching |
-| `memory-write` | Write to memory with append/create modes |
-| `code-quality-check` | Run ESLint, TypeScript, and Prettier checks |
+## 🛠️ Commands
 
-### Examples
+### Core Commands
 
 ```bash
-# Search memory with fuzzy matching
-claude-antislop memory-search --query "TypeScript strict mode" --category standards
+# Install the plugin
+claude-antislop install --init-memory
+
+# Check plugin status
+claude-antislop status
+
+# Scan a repository
+claude-antislop scan --repo ./my-project --output ./templates
+
+# Learn from Git history
+claude-antislop learn-from-git --repo . --recent 30d
+```
+
+### Memory Management
+
+```bash
+# Initialize memory directories
+claude-antislop init-memory
+
+# Search memory
+claude-antislop memory-search --query "error handling" --limit 5
 
 # Write to memory
-claude-antislop memory-write --category patterns --filename "react-patterns.md" --content "..."
-
-# Check code quality
-claude-antislop code-quality-check --code "const x = 1" --language typescript --checks lint,typecheck,prettier
-
-# Learn from git
-claude-antislop learn-from-git --repo ./my-project --recent 30d
+claude-antislop memory-write --category standards --filename testing.md --content "..."
 ```
 
-### MCP Integration
+### Code Quality
 
-Claude Anti-Slop integrates with Claude Code via MCP (Model Context Protocol). Add to your MCP configuration:
-
-```json
-{
-  "mcpServers": {
-    "claude-antislop": {
-      "command": "claude-antislop",
-      "args": ["mcp-server"]
-    }
-  }
-}
+```bash
+# Run quality checks
+claude-antislop code-quality-check --code "const x = 1" --language typescript
 ```
 
-## Architecture
+### MCP Server
+
+```bash
+# Start MCP server for Claude Code
+claude-antislop mcp-server
+```
+
+### Shell Completion
+
+```bash
+# Print completion script
+claude-antislop completion bash
+claude-antislop completion zsh
+claude-antislop completion fish
+
+# Install completion
+claude-antislop completion install
+claude-antislop completion install zsh --path ~/.zfunc
+```
+
+### Interactive Wizard
+
+```bash
+# Run first-run setup wizard
+claude-antislop wizard
+```
+
+## 🌍 Localization
+
+Claude Anti-Slop supports 6 languages:
+
+```bash
+# Set locale per command
+claude-antislop status --locale fr
+claude-antislop scan --locale es
+claude-antislop wizard --locale ja
+
+# Supported locales: en, fr, es, de, zh, ja
+```
+
+## 🤖 Automation
+
+Use `--json` for machine-readable output:
+
+```bash
+# JSON output
+claude-antislop status --json
+claude-antislop memory-search --query "testing" --json
+
+# Quiet mode (exit code only)
+claude-antislop status --quiet
+```
+
+### Example: Bash Script
+
+```bash
+#!/bin/bash
+
+# Check status
+status=$(claude-antislop status --json)
+active=$(echo "$status" | jq -r '.data.active')
+
+if [ "$active" != "true" ]; then
+  claude-antislop init-memory
+fi
+
+# Search memory
+results=$(claude-antislop memory-search --query "error handling" --json)
+count=$(echo "$results" | jq -r '.data.count')
+
+echo "Found $count error handling patterns"
+```
+
+## 📁 Project Structure
 
 ```
 claude-antislop/
 ├── cli/                    # Command-line interface
-│   ├── index.mjs          # Main entry point
-│   ├── lib/               # CLI libraries
-│   │   ├── ui.mjs         # Terminal UI utilities
-│   │   ├── install.mjs    # Installation logic
-│   │   ├── status.mjs     # Status diagnostics
+│   ├── index.mjs          # Main CLI entry point
+│   ├── lib/               # Core libraries
+│   │   ├── ui.mjs         # User interface helpers
+│   │   ├── output.mjs     # JSON/human output formatting
+│   │   ├── i18n.mjs       # Internationalization
+│   │   ├── completion.mjs # Shell completions
+│   │   ├── wizard.mjs     # First-run wizard
+│   │   ├── memory.mjs     # Memory management
 │   │   ├── scan.mjs       # Repository scanning
-│   │   ├── learn.mjs      # Git learning
-│   │   └── memory.mjs     # Memory management
-│   └── commands/          # CLI commands
-├── mcp/                   # MCP server implementation
-│   ├── mcp-server-index.mjs
-│   └── tools/             # MCP tools
-│       ├── memory-search.mjs
-│       ├── memory-write.mjs
-│       ├── code-quality-check.mjs
-│       ├── scan-repo.mjs
-│       └── learn-from-git.mjs
-├── plugin/                # Claude Code plugin
-│   └── plugin.json
-├── rules/                 # Quality rules (149 rules, 12 categories)
-├── templates/             # Generated templates (10 standards/patterns)
-├── tests/                 # Test suite (56 tests, 85%+ coverage)
-└── docs/                  # Documentation
+│   │   ├── learn.mjs      # Git history learning
+│   │   ├── quality.mjs    # Code quality checks
+│   │   └── install.mjs    # Installation logic
+│   └── completions/       # Shell completion scripts
+│       ├── claude-antislop.bash
+│       ├── _claude-antislop (zsh)
+│       └── claude-antislop.fish
+├── mcp/                    # MCP server
+│   └── mcp-server-index.mjs
+├── docs/                   # Documentation
+│   ├── INSTALL.md
+│   ├── USAGE.md
+│   ├── CLI.md
+│   ├── SHELL_COMPLETION.md
+│   ├── WIZARD.md
+│   ├── JSON_OUTPUT.md
+│   ├── LOCALIZATION.md
+│   └── MCP.md
+├── index.html             # Landing page
+└── package.json
 ```
 
-## System Requirements
+## 🎯 Memory Categories
 
-- **Node.js** 18.0.0 or higher
-- **npm** 9.0.0 or higher
-- **Git** 2.0.0 or higher (for git learning features)
-- **ESLint** (optional, for code quality checks)
-- **TypeScript** (optional, for type checking)
-- **Prettier** (optional, for formatting checks)
-- **Claude Code** (optional, for MCP integration)
+Claude Anti-Slop organizes knowledge into 5 categories:
 
-## Testing
+- **standards/** - Coding standards and best practices
+- **patterns/** - Common patterns and solutions
+- **anti-patterns/** - Things to avoid
+- **insights/** - Project-specific insights
+- **reviews/** - Code review guidelines
+
+## 📊 JSON Output Schema
+
+All JSON output follows a consistent schema:
+
+```typescript
+interface Response {
+  success: boolean;
+  message: string;
+  data: any | null;
+  hint?: string | null;
+  timestamp: string; // ISO 8601
+}
+```
+
+## 🔧 Configuration
+
+Configuration is stored in `~/.claude-antislop/config.json`:
+
+```json
+{
+  "defaultStack": ["nextjs"],
+  "locales": ["en"],
+  "features": {
+    "learnFromGit": true,
+    "autoUpdateMemory": false,
+    "reviewMode": true
+  }
+}
+```
+
+## 🌐 MCP Integration
+
+Claude Anti-Slop includes an MCP server for integration with Claude Code and other MCP clients:
 
 ```bash
-# Run all tests
-npm test
-
-# Run with coverage
-npm run test:coverage
-
-# Run specific test file
-npm test -- tests/memory-search.test.mjs
+# Start MCP server
+claude-antislop mcp-server
 ```
 
-### Test Coverage
+See [MCP Documentation](docs/MCP.md) for details.
 
-- **56 tests** covering CLI, MCP tools, and utilities
-- **85%+ code coverage** across all modules
-- **Integration tests** for end-to-end flows
-- **Unit tests** for individual functions
+## 📝 License
 
-## Security & Privacy
+MIT
 
-- **Local-first**: All data stays on your machine
-- **No repo config**: Never modifies your repository configuration
-- **Per-developer**: Each developer has their own memory and settings
-- **No telemetry**: No data collection or analytics
-- **Open source**: Full transparency of all operations
+## 🤝 Contributing
 
-### Security Features
+Contributions welcome! Please read our contributing guidelines first.
 
-- **Path traversal protection**: Blocks `../` and symlink attacks
-- **Command injection prevention**: Safe argument handling
-- **Temp file cleanup**: Guaranteed cleanup on errors
-- **Input validation**: Strict category and filename validation
-- **Error handling**: Graceful degradation on failures
+## 🙏 Acknowledgments
 
-## Documentation
-
-- **[INSTALL.md](docs/INSTALL.md)** - Detailed installation guide
-- **[USAGE.md](docs/USAGE.md)** - Complete usage documentation
-- **[MCP.md](docs/MCP.md)** - MCP server documentation
-- **[CLI.md](docs/CLI.md)** - CLI command reference
-- **[SECURITY.md](docs/SECURITY.md)** - Security policy
-- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contribution guidelines
-
-## Development
-
-```bash
-# Clone and setup
-git clone https://github.com/mednabouli/claude-antislop.git
-cd claude-antislop
-npm install
-
-# Run in development mode
-npm run dev
-
-# Build for production
-npm run build
-
-# Lint code
-npm run lint
-
-# Type check
-npm run typecheck
-```
-
-### Project Structure
-
-- **`cli/`** - Command-line interface implementation
-- **`mcp/`** - MCP server and tools
-- **`plugin/`** - Claude Code plugin configuration
-- **`rules/`** - Quality rules and standards
-- **`templates/`** - Generated templates
-- **`tests/`** - Test suite
-- **`docs/`** - Documentation
-
-## Roadmap
-
-### Completed (v1.0)
-- ✅ 149 rules across 12 categories
-- ✅ 10 standards/patterns files
-- ✅ 11 CLI commands with error handling
-- ✅ 5 MCP tools with fuzzy search, prettier checks, 10 pattern types
-- ✅ Polished CLI output with consistent colors, spinners, tables
-- ✅ 56 tests (85%+ coverage)
-- ✅ Security & privacy policies
-- ✅ Complete documentation
-
-### Planned (v1.1)
-- 🔲 Shell completion (`bash`, `zsh`, `fish`)
-- 🔲 Interactive first-run wizard
-- 🔲 Automatic update notifications
-- 🔲 JSON output mode for automation (`--json`)
-- 🔲 Localized CLI messages
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Author
-
-**Med** ([@mednabouli](https://github.com/mednabouli))
-
-- **Blog**: [mednabouli.me](https://mednabouli.me)
-- **Location**: Montreal
-- **Company**: [@mednabouli](https://github.com/mednabouli)
-
-## Contributing
-
-Contributions are welcome! Please read our [Contributing Guide](docs/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/mednabouli/claude-antislop/issues)
-- **Documentation**: [docs/](docs/)
-- **FAQ**: [docs/FAQ.md](docs/FAQ.md)
-
----
-
-**Built with ❤️ in Montreal**
+Built with ❤️ for developers who care about code quality.
