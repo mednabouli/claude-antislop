@@ -1,1 +1,467 @@
-Refreshed project landing page aligned with the updated project positioning, feature set, and documentation navigation.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Claude AntiSlop - Eliminate AI-generated code slop before it reaches your codebase. CLI, GitHub Actions, MCP server, and VS Code extension.">
+    <meta name="keywords" content="AI code quality, code review, linting, GitHub Actions, developer tools, TypeScript, JavaScript">
+    <meta name="author" content="mednabouli">
+    <title>Claude AntiSlop - Eliminate AI Code Slop</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 30px;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--text);
+        }
+        
+        .features {
+            padding: 80px 0;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        
+        .integrations {
+            background: var(--bg-card);
+            padding: 80px 0;
+        }
+        
+        .integrations h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+        }
+        
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        
+        .integration-card {
+            background: var(--bg);
+            padding: 28px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .integration-card h3 {
+            margin: 16px 0 8px;
+            font-size: 18px;
+        }
+        
+        .integration-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .code-preview {
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 40px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .code-preview pre {
+            margin: 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #e6edf3;
+        }
+        
+        .code-preview .comment { color: #8b949e; }
+        .code-preview .command { color: #79c0ff; }
+        .code-preview .output { color: #a5d6ff; }
+        .code-preview .error { color: #ff7b72; }
+        .code-preview .warning { color: #ffa657; }
+        
+        .install {
+            padding: 80px 0;
+        }
+        
+        .install h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+        
+        .install-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .install-tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .install-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .install-code {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .install-code code {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            color: var(--text);
+            font-size: 16px;
+        }
+        
+        .docs-link {
+            text-align: center;
+            padding: 80px 0;
+        }
+        
+        .docs-link h2 {
+            font-size: 36px;
+            margin-bottom: 24px;
+        }
+        
+        .docs-link p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-size: 18px;
+        }
+        
+        footer {
+            background: var(--bg-card);
+            padding: 40px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">Claude <span>AntiSlop</span> 🛡️</a>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#integrations">Integrations</a>
+                    <a href="#install">Install</a>
+                    <a href="https://github.com/mednabouli/claude-antislop">GitHub</a>
+                </div>
+            </nav>
+            <div class="hero">
+                <h1>Eliminate AI Code Slop</h1>
+                <p>Detect and block low-effort AI-generated code patterns before they pollute your repository. CLI, GitHub Actions, MCP server, and VS Code extension.</p>
+                <div class="cta-buttons">
+                    <a href="#install" class="btn btn-primary">Get Started</a>
+                    <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary">View on GitHub</a>
+                    <a href="docs/index.md" class="btn btn-secondary">Documentation</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Pattern Detection</h3>
+                    <p>Identifies placeholder comments, lazy naming, copy-paste artifacts, and hallucinated imports automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>Multi-Modal Integration</h3>
+                    <p>CLI, GitHub Actions, MCP server, VS Code extension, and watch mode for real-time feedback.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Configurable Rules</h3>
+                    <p>Customize detection sensitivity via .antisloprc or CLI flags to match your team's standards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Security-First</h3>
+                    <p>Built-in security audit checks for exposed secrets, unsafe patterns, and dependency issues.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Localization Support</h3>
+                    <p>Detect non-English comments and strings that slip through AI generation.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>JSON Output</h3>
+                    <p>Machine-readable reports for CI/CD pipelines and custom automation tooling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="code-preview">
+            <pre><span class="comment"># Example output</span>
+<span class="output">❌ src/utils/helpers.ts:24:5</span>
+   <span class="error">[ERROR]</span> Placeholder comment detected: "TODO: implement this"
+   <span class="warning">[WARN]</span> Lazy variable name: data1, data2
+
+<span class="output">❌ src/api/client.ts:108:1</span>
+   <span class="error">[ERROR]</span> Hallucinated import: import { nonExistentFunction } from 'lodash'
+
+<span class="output">Found 3 issues (2 errors, 1 warning) in 47 files</span></pre>
+        </div>
+    </section>
+
+    <section id="integrations" class="integrations">
+        <div class="container">
+            <h2>Integrations</h2>
+            <div class="integration-grid">
+                <div class="integration-card">
+                    <div style="font-size: 40px;">💻</div>
+                    <h3>CLI</h3>
+                    <p>Run checks locally or in any CI environment</p>
+                </div>
+                <div class="integration-card">
+                    <div style="font-size: 40px;">⚡</div>
+                    <h3>GitHub Actions</h3>
+                    <p>Automated quality gates in your workflow</p>
+                </div>
+                <div class="integration-card">
+                    <div style="font-size: 40px;">🤖</div>
+                    <h3>MCP Server</h3>
+                    <p>Integrate with AI coding assistants</p>
+                </div>
+                <div class="integration-card">
+                    <div style="font-size: 40px;">📦</div>
+                    <h3>VS Code</h3>
+                    <p>Inline warnings as you code</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="install" class="install">
+        <div class="container">
+            <h2>Install</h2>
+            <div class="install-tabs">
+                <div class="install-tab active">npm</div>
+                <div class="install-tab">pnpm</div>
+                <div class="install-tab">Source</div>
+            </div>
+            <div class="install-code">
+                <code>npm install -g claude-antislop</code>
+            </div>
+        </div>
+    </section>
+
+    <section class="docs-link">
+        <div class="container">
+            <h2>Ready to clean up your codebase?</h2>
+            <p>Get started in minutes with comprehensive documentation and examples.</p>
+            <div class="cta-buttons">
+                <a href="docs/index.md" class="btn btn-primary">View Documentation</a>
+                <a href="https://github.com/mednabouli/claude-antislop" class="btn btn-secondary">Star on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Maintained by <a href="https://github.com/mednabouli">@mednabouli</a> | <a href="https://github.com/mednabouli/claude-antislop/blob/main/LICENSE">MIT License</a></p>
+        </div>
+    </footer>
+</body>
+</html>
