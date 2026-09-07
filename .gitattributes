@@ -1,0 +1,35 @@
+# Text files
+*.md text
+*.txt text
+*.json text
+*.yaml text
+*.yml text
+*.mjs text
+*.js text
+*.ts text
+*.tsx text
+*.jsx text
+*.html text
+*.css text
+*.scss text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.pdf binary
+*.zip binary
+
+# Normalize line endings
+* text=auto eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Config files
+.editorconfig text eol=lf
+.eslintrc* text eol=lf
+.prettierrc text eol=lf
