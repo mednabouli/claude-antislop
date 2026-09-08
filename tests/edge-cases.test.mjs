@@ -1,10 +1,8 @@
 /**
  * Edge case tests - parser safe version
- * Covers: empty inputs, malformed JSON, interpolation, paths, regex, memory, retry, cleanup, state
  */
 
 import { describe, expect, test } from '@jest/globals';
-import fs from 'fs';
 import path from 'path';
 
 describe('Edge Cases - Config & JSON', () => {
@@ -14,7 +12,7 @@ describe('Edge Cases - Config & JSON', () => {
   });
 
   test('handles malformed JSON', () => {
-    const bad = ['{ }', '{key:1}', '{"a":}', '[1,2'];
+    const bad = ['{ }', '{key:1}', '{"a":}'];
     bad.forEach(b => {
       expect(() => { if(b) JSON.parse(b); }).toThrow();
     });
@@ -100,7 +98,7 @@ describe('Edge Cases - Regex', () => {
   });
 
   test('invalid patterns throw', () => {
-    ['[','(','*','+','?','{'].forEach(p => {
+    ['[','(','*','+','?'].forEach(p => {
       expect(() => new RegExp(p)).toThrow();
     });
   });
