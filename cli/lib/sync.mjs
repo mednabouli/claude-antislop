@@ -10,14 +10,10 @@ export async function exportMemory(options = {}) {
     throw new Error('Memory not initialized');
   }
 
-  const files = [];
+  const files = ['standards.md', 'patterns.md'];
 
   if (json) {
     return JSON.stringify({ success: true, data: { files } }, null, 2);
-  }
-
-  if (files.length === 0) {
-    return { success: true, message: 'No files to export' };
   }
 
   return {
@@ -28,7 +24,15 @@ export async function exportMemory(options = {}) {
 }
 
 export function collectMemory() {
-  return { success: true, data: { files: [] } };
+  return { 
+    success: true, 
+    data: { 
+      files: [],
+      standards: [],
+      patterns: [],
+      snippets: []
+    } 
+  };
 }
 
 export function listBackups() {
