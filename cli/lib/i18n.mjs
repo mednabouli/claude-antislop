@@ -8,6 +8,8 @@ const LOCALES = {
   ar: { name: 'Arabic', dir: 'rtl' }
 };
 
+let currentLocale = 'en';
+
 export function getLocale(locale) {
   if (!locale) {
     return { locale: 'en', ...LOCALES.en };
@@ -21,7 +23,12 @@ export function getLocale(locale) {
   return { locale: 'en', ...LOCALES.en };
 }
 
-export function t(key, params = {}, locale = 'en') {
+export function setLocale(locale) {
+  currentLocale = locale || 'en';
+  return currentLocale;
+}
+
+export function t(key, params = {}, locale = currentLocale) {
   if (!key) {
     return '';
   }
