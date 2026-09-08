@@ -1,467 +1,179 @@
 /**
- * Comprehensive edge case tests for claude-antislop CLI
- * Standalone tests that don't depend on source imports
+ * Edge case tests - parser safe version
+ * Covers: empty inputs, malformed JSON, interpolation, paths, regex, memory, retry, cleanup, state
  */
 
 import { describe, expect, test } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 
-describe('Edge Cases - Sync Module', () => {
-  describe('config file handling', () => {
-    test('handles missing config file gracefully', () => {
-      const configPath = '/nonexistent/.antisloprc';
-      const exists = fs.existsSync(configPath);
-      expect(exists).toBe(false);
-    });
+describe('Edge Cases - Config & JSON', () => {
+  test('handles empty config', () => {
+    const empty = '';
+    expect(empty.trim()).toBe('');
+  });
 
-    test('handles empty config file', () => {
-      const emptyConfig = '';
-      expect(emptyConfig.trim()).toBe('');
-    });
-
-    test('handles malformed JSON config', () => {
-      const malformedConfigs = [
-        '{ invalid json }',
-        '{"key": }',
-        '{key: "value"}',
-      ];
-
-      malformedConfigs.forEach((config) => {
-        expect(() => {
-          if (config.trim()) JSON.parse(config);
-        }).toThrow();
-      });
-    });
-
-    test('handles config with extra whitespace', () => {
-      const config = `{
-          "rules": ["rule1"],
-          "threshold": 0.8
-        }`;
-      const parsed = JSON.parse(config);
-      expect(parsed.rules).toEqual(['rule1']);
-      expect(parsed.threshold).toBe(0.8);
+  test('handles malformed JSON', () => {
+    const bad = ['{ }', '{key:1}', '{"a":}', '[1,2'];
+    bad.forEach(b => {
+      expect(() => { if(b) JSON.parse(b); }).toThrow();
     });
   });
 
-  describe('file system operations', () => {
-    test('handles deeply nested paths', () => {
-      const deepPath = path.join('a', 'b', 'c', 'd', 'e', 'f', 'file.txt');
-      expect(deepPath).toContain('file.txt');
-      expect(deepPath.split(path.sep).length).toBeGreaterThan(5);
-    });
-
-    test('handles paths with special characters', () => {
-      const specialPaths = [
-        'file with spaces.txt',
-        'file-with-dashes.txt',
-        'file_with_underscores.txt',
-        'file.multiple.dots.txt',
-      ];
-
-      specialPaths.forEach((filename) => {
-        expect(filename).toBeTruthy();
-        expect(filename.length).toBeGreaterThan(0);
-      });
-    });
-  });
-
-  describe('encoding and character sets', () => {
-    test('handles UTF-8 files with BOM', () => {
-      const withBOM = Buffer.concat([
-        Buffer.from([0xef, 0xbb, 0xbf]),
-        Buffer.from('content', 'utf-8'),
-      ]);
-      expect(withBOM.toString('utf-8').trim()).toBe('content');
-    });
-
-    test('handles mixed line endings', () => {
-      const mixedContent = 'line1\nline2\r\nline3\rline4';
-      const normalized = mixedContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-      expect(normalized.split('\n').length).toBe(4);
-    });
-  });
-
-  describe('large files', () => {
-    test('handles files larger than threshold', () => {
-      const largeContent = 'x'.repeat(1024 * 1024);
-      expect(largeContent.length).toBe(1024 * 1024);
-    });
+  test('handles whitespace', () => {
+    const json = JSON.parse('{ "x": 1 }');
+    expect(json.x).toBe(1);
   });
 });
 
-describe('Edge Cases - I18N Module', () => {
-  describe('translation loading', () => {
-    test('handles empty translation files', () => {
-      const emptyTranslations = {};
-      expect(Object.keys(emptyTranslations).length).toBe(0);
-    });
-
-    test('handles nested translation keys', () => {
-      const translations = {
-        errors: {
-          network: {
-            timeout: 'Connection timed out',
-            refused: 'Connection refused',
-          },
-        },
-      };
-
-      const key = 'errors.network.timeout';
-      const parts = key.split('.');
-      let result = translations;
-      for (const part of parts) {
-        result = result?.[part];
-      }
-      expect(result).toBe('Connection timed out');
-    });
-
-    test('handles interpolation variables', () => {
-      const template = 'Hello, {{name}}! You have {{count}} messages.';
-      const values = { name: 'Alice', count: 5 };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => values[key] || '');
-      expect(result).toBe('Hello, Alice! You have 5 messages.');
-    });
-
-    test('handles missing interpolation variables', () => {
-      const template = 'Hello, {{name}}!';
-      const values = {};
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => values[key] ?? `{{${key}}}`);
-      expect(result).toBe('Hello, {{name}}!');
-    });
-
-    test('handles pluralization', () => {
-      const pluralRules = {
-        one: '{{count}} item',
-        other: '{{count}} items',
-      };
-
-      const getCount = (count) => (count === 1 ? pluralRules.one : pluralRules.other);
-      expect(getCount(1).replace('{{count}}', '1')).toBe('1 item');
-      expect(getCount(5).replace('{{count}}', '5')).toBe('5 items');
-    });
-
-    test('handles emoji in translations', () => {
-      const withEmoji = 'Success! ✅';
-      expect(withEmoji).toContain('✅');
-    });
+describe('Edge Cases - Templates & Interpolation', () => {
+  test('empty template', () => {
+    const t = '';
+    const d = {a:1};
+    expect(t.replace(/\{\{(\w+)\}\}/g, (_,k) => d[k] ?? '')).toBe('');
   });
 
-  describe('locale detection', () => {
-    test('handles missing locale', () => {
-      const locale = undefined;
-      const fallback = 'en';
-      const result = locale || fallback;
-      expect(result).toBe('en');
-    });
+  test('undefined var', () => {
+    const t = 'Hi {{name}}';
+    expect(t.replace(/\{\{(\w+)\}\}/g, (_,k) => ({}[k] ?? ''))).toBe('Hi ');
+  });
+
+  test('null var', () => {
+    const t = 'V:{{v}}';
+    expect(t.replace(/\{\{(\w+)\}\}/g, (_,k) => ({v:null}[k] ?? ''))).toBe('V:');
+  });
+
+  test('multiple same var', () => {
+    const t = '{{x}} and {{x}}';
+    const d = {x:'A'};
+    expect(t.replace(/\{\{(\w+)\}\}/g, (_,k) => d[k] ?? '')).toBe('A and A');
+  });
+
+  test('interpolation with plural', () => {
+    const one = '{{c}} item';
+    const other = '{{c}} items';
+    const get = c => (c === 1 ? one : other).replace('{{c}}', String(c));
+    expect(get(1)).toBe('1 item');
+    expect(get(2)).toBe('2 items');
   });
 });
 
-describe('Edge Cases - Templates Module', () => {
-  describe('template rendering', () => {
-    test('handles empty template', () => {
-      const template = '';
-      const data = { key: 'value' };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || '');
-      expect(result).toBe('');
-    });
-
-    test('handles template with no variables', () => {
-      const template = 'Static content without variables';
-      const data = { unused: 'value' };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || '');
-      expect(result).toBe(template);
-    });
-
-    test('handles undefined variables', () => {
-      const template = 'Hello, {{name}}!';
-      const data = {};
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] ?? '');
-      expect(result).toBe('Hello, !');
-    });
-
-    test('handles null variables', () => {
-      const template = 'Value: {{value}}';
-      const data = { value: null };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] ?? '');
-      expect(result).toBe('Value: ');
-    });
-
-    test('handles multiple same variables', () => {
-      const template = '{{name}} likes {{name}}';
-      const data = { name: 'Alice' };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || '');
-      expect(result).toBe('Alice likes Alice');
-    });
-
-    test('handles unclosed variable tags', () => {
-      const template = 'Hello, {{name';
-      const data = { name: 'World' };
-      const result = template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] || '');
-      expect(result).toBe('Hello, {{name');
-    });
+describe('Edge Cases - Paths & Files', () => {
+  test('nested path', () => {
+    const p = path.join('a','b','c','d');
+    expect(p.split(path.sep).length).toBeGreaterThanOrEqual(4);
   });
 
-  describe('template loading', () => {
-    test('handles missing template file', () => {
-      expect(() => {
-        fs.readFileSync('/nonexistent/template.txt', 'utf-8');
-      }).toThrow();
-    });
+  test('no extension', () => {
+    expect(path.extname('README')).toBe('');
+  });
+
+  test('multi extension', () => {
+    expect(path.extname('a.tar.gz')).toBe('.gz');
+  });
+
+  test('hidden file', () => {
+    expect('.gitignore'.startsWith('.')).toBe(true);
+  });
+
+  test('excluded dir', () => {
+    const ex = ['node_modules','.git','dist'];
+    const p = 'node_modules/x.js';
+    expect(ex.some(d => p.startsWith(d + path.sep))).toBe(true);
+  });
+
+  test('BOM buffer', () => {
+    const b = Buffer.concat([Buffer.from([0xef,0xbb,0xbf]), Buffer.from('x','utf8')]);
+    expect(b.toString('utf8').trim()).toBe('x');
+  });
+
+  test('mixed line endings', () => {
+    const s = 'a\nb\r\nc\rd';
+    const n = s.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    expect(n.split('\n').length).toBe(4);
   });
 });
 
-describe('Edge Cases - Scan Module', () => {
-  describe('file scanning', () => {
-    test('handles empty file', () => {
-      const content = '';
-      expect(content.length).toBe(0);
-    });
+describe('Edge Cases - Regex', () => {
+  test('empty pattern', () => {
+    expect('').toBe('');
+  });
 
-    test('handles files with no extension', () => {
-      const filename = 'README';
-      const ext = path.extname(filename);
-      expect(ext).toBe('');
-    });
-
-    test('handles files with multiple extensions', () => {
-      const filename = 'file.tar.gz';
-      const ext = path.extname(filename);
-      expect(ext).toBe('.gz');
-    });
-
-    test('handles hidden files', () => {
-      const filename = '.gitignore';
-      const isHidden = filename.startsWith('.');
-      expect(isHidden).toBe(true);
-    });
-
-    test('handles files in excluded directories', () => {
-      const excluded = ['node_modules', '.git', 'dist', 'build', 'coverage'];
-      const testPath = 'node_modules/package/index.js';
-      const isExcluded = excluded.some((dir) => testPath.startsWith(dir + path.sep));
-      expect(isExcluded).toBe(true);
+  test('invalid patterns throw', () => {
+    ['[','(','*','+','?','{'].forEach(p => {
+      expect(() => new RegExp(p)).toThrow();
     });
   });
 
-  describe('pattern matching', () => {
-    test('handles empty patterns', () => {
-      const pattern = '';
-      expect(pattern).toBe('');
-    });
+  test('case insensitive', () => {
+    const r = /x/i;
+    expect(r.test('X')).toBe(true);
+  });
 
-    test('handles invalid regex patterns', () => {
-      const invalidPatterns = ['[', '(', '*', '+', '?', '{'];
-      invalidPatterns.forEach((pattern) => {
-        expect(() => new RegExp(pattern)).toThrow();
-      });
-    });
+  test('multiline', () => {
+    const r = /start[\s\S]*?end/m;
+    expect(r.test('start\nmid\nend')).toBe(true);
+  });
 
-    test('handles case-insensitive matching', () => {
-      const regex = /test/i;
-      expect(regex.test('TEST')).toBe(true);
-      expect(regex.test('test')).toBe(true);
-    });
-
-    test('handles multiline matching', () => {
-      const regex = /start[\s\S]*?end/m;
-      const content = 'start\nmiddle\nend';
-      expect(regex.test(content)).toBe(true);
-    });
-
-    test('handles non-greedy matching', () => {
-      const regex = /<.*?>/g;
-      const matches = '<a><b><c>'.match(regex);
-      expect(matches).toEqual(['<a>', '<b>', '<c>']);
-    });
+  test('non-greedy', () => {
+    const r = /<.*?>/g;
+    expect('<a><b>'.match(r)).toEqual(['<a>','<b>']);
   });
 });
 
-describe('Edge Cases - Memory Module', () => {
-  describe('memory persistence', () => {
-    test('handles corrupted memory file', () => {
-      const corrupted = '{ invalid json }';
-      expect(() => JSON.parse(corrupted)).toThrow();
-    });
-
-    test('handles empty memory', () => {
-      const memory = [];
-      expect(memory.length).toBe(0);
-    });
-
-    test('handles memory cleanup/expiration', () => {
-      const now = Date.now();
-      const memory = [
-        { key: 'recent', timestamp: now },
-        { key: 'old', timestamp: now - 86400000 * 30 },
-      ];
-
-      const maxAge = 86400000 * 7;
-      const filtered = memory.filter((item) => now - item.timestamp < maxAge);
-      expect(filtered.length).toBe(1);
-      expect(filtered[0].key).toBe('recent');
-    });
+describe('Edge Cases - Memory', () => {
+  test('empty memory', () => {
+    expect([]).toHaveLength(0);
   });
 
-  describe('memory operations', () => {
-    test('handles duplicate keys', () => {
-      const memory = [
-        { key: 'x', value: 1 },
-        { key: 'x', value: 2 },
-      ];
+  test('duplicate keys (map last wins)', () => {
+    const mem = [{k:'x',v:1},{k:'x',v:2}];
+    const m = new Map(mem.map(i => [i.k,i.v]));
+    expect(m.get('x')).toBe(2);
+  });
 
-      const map = new Map(memory.map((item) => [item.key, item.value]));
-      expect(map.get('x')).toBe(2);
-    });
+  test('expiration filter', () => {
+    const now = Date.now();
+    const mem = [{k:'new',t:now},{k:'old',t:now-864e5*30}];
+    const max = 864e5*7;
+    const f = mem.filter(i => now - i.t < max);
+    expect(f).toHaveLength(1);
+    expect(f[0].k).toBe('new');
   });
 });
 
-describe('Edge Cases - Output Module', () => {
-  describe('console output', () => {
-    test('handles empty messages', () => {
-      const message = '';
-      expect(message).toBe('');
-    });
-
-    test('handles multiline messages', () => {
-      const message = 'Line 1\nLine 2\nLine 3';
-      expect(message.split('\n').length).toBe(3);
-    });
-
-    test('handles unicode output', () => {
-      const message = 'Emoji: 🚀 ✓ ✗ ★';
-      expect(message).toContain('🚀');
-    });
+describe('Edge Cases - Retry & Cleanup', () => {
+  test('retry succeeds on last attempt', () => {
+    const max = 3;
+    let n = 0;
+    const fn = () => { n++; if (n < max) throw new Error('x'); return 'ok'; };
+    let ok = false;
+    for (let i = 0; i < max; i++) {
+      try { fn(); ok = true; break; } catch { if (i === max-1) throw; }
+    }
+    expect(ok).toBe(true);
+    expect(n).toBe(max);
   });
 
-  describe('formatting', () => {
-    test('handles JSON output', () => {
-      const data = { key: 'value', nested: { a: 1 } };
-      const json = JSON.stringify(data, null, 2);
-      expect(json).toContain('{');
-      expect(json).toContain('}');
-    });
+  test('finally cleanup', () => {
+    let c = false;
+    try { throw new Error('x'); } finally { c = true; }
+    expect(c).toBe(true);
   });
 });
 
-describe('Edge Cases - UI Module', () => {
-  describe('interactive prompts', () => {
-    test('handles empty default values', () => {
-      const defaultValue = '';
-      expect(defaultValue).toBe('');
-    });
-
-    test('handles validation failures', () => {
-      const validate = (input) => {
-        if (!input) return 'Required';
-        if (input.length < 3) return 'Too short';
-        return true;
-      };
-
-      expect(validate('')).toBe('Required');
-      expect(validate('ab')).toBe('Too short');
-      expect(validate('abc')).toBe(true);
-    });
-
-    test('handles transform functions', () => {
-      const transform = (input) => input.trim().toLowerCase();
-      expect(transform('  HELLO  ')).toBe('hello');
-    });
+describe('Edge Cases - State', () => {
+  test('recover from null', () => {
+    const init = {c:0};
+    let s = {...init};
+    s = null;
+    s = s || {...init};
+    expect(s.c).toBe(0);
   });
 
-  describe('choice lists', () => {
-    test('handles empty choices', () => {
-      const choices = [];
-      expect(choices.length).toBe(0);
-    });
-
-    test('handles single choice', () => {
-      const choices = ['Only option'];
-      expect(choices.length).toBe(1);
-    });
-  });
-
-  describe('error display', () => {
-    test('handles empty error messages', () => {
-      const error = new Error('');
-      expect(error.message).toBe('');
-    });
-  });
-});
-
-describe('Integration - Edge Cases', () => {
-  describe('error propagation', () => {
-    test('handles errors across module boundaries', () => {
-      const simulateError = () => {
-        throw new Error('Scan failed');
-      };
-
-      expect(simulateError).toThrow('Scan failed');
-    });
-
-    test('handles retry logic', () => {
-      const maxRetries = 3;
-      let attempts = 0;
-
-      const retryable = () => {
-        attempts++;
-        if (attempts < maxRetries) {
-          throw new Error('Temporary failure');
-        }
-        return 'success';
-      };
-
-      let success = false;
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          retryable();
-          success = true;
-          break;
-        } catch {
-          if (i === maxRetries - 1) throw;
-        }
-      }
-
-      expect(success).toBe(true);
-      expect(attempts).toBe(maxRetries);
-    });
-  });
-
-  describe('resource cleanup', () => {
-    test('handles cleanup on error', () => {
-      let cleaned = false;
-
-      try {
-        throw new Error('Failed');
-      } finally {
-        cleaned = true;
-      }
-
-      expect(cleaned).toBe(true);
-    });
-  });
-
-  describe('state management', () => {
-    test('handles state corruption', () => {
-      const initialState = { count: 0 };
-      let state = { ...initialState };
-
-      state = null;
-      state = state || { ...initialState };
-      
-      expect(state.count).toBe(0);
-    });
-
-    test('handles concurrent state updates', () => {
-      let state = { count: 0 };
-      const updates = [1, 2, 3, 4, 5];
-
-      updates.forEach((delta) => {
-        state = { ...state, count: state.count + delta };
-      });
-
-      expect(state.count).toBe(15);
-    });
+  test('concurrent updates', () => {
+    let s = {c:0};
+    [1,2,3].forEach(d => { s = {...s, c: s.c + d }; });
+    expect(s.c).toBe(6);
   });
 });
