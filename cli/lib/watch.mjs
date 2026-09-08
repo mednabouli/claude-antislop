@@ -1,5 +1,4 @@
 import { ui } from './ui.mjs';
-import { join } from 'path';
 import { watch } from 'chokidar';
 
 export function watchDirectory(dir, options = {}) {
