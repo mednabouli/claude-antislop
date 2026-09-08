@@ -50,3 +50,15 @@ export function createSuccessResponse(data) {
     timestamp: new Date().toISOString()
   };
 }
+
+export function printOutput(output) {
+  if (!output) {
+    return '';
+  }
+  
+  if (typeof output === 'string') {
+    return output;
+  }
+  
+  return JSON.stringify(output, null, 2);
+}
