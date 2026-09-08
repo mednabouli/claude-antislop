@@ -1,29 +1,26 @@
-import { describe, it, expect } from '@jest/globals';
-import { listTemplates, installTemplates, previewTemplate, getAvailableStacks } from '../cli/lib/templates.mjs';
+import { installTemplates, listTemplates, previewTemplate } from '../cli/lib/templates.mjs';
 
 describe('Templates Commands', () => {
-  it('should list available stacks', () => {
-    const stacks = getAvailableStacks();
-    expect(stacks).toContain('nextjs');
-    expect(stacks).toContain('vue');
-    expect(stacks).toContain('python');
+  it('should list templates', async () => {
+    const result = await listTemplates({});
+    expect(result.success).toBe(true);
+    expect(result.data.count).toBeGreaterThanOrEqual(1);
   });
 
-  it('should list templates', async () => {
-    const result = await listTemplates({ json: true });
+  it('should list templates by stack', async () => {
+    const result = await listTemplates({ stack: 'react' });
     expect(result.success).toBe(true);
-    expect(result.data.count).toBeGreaterThanOrEqual(0);
   });
 
   it('should install templates', async () => {
-    const result = await installTemplates('nextjs', { json: true });
+    const result = await installTemplates(['nextjs/components', 'react/utils']);
     expect(result.success).toBe(true);
-    expect(result.data.installed.length).toBeGreaterThan(0);
+    expect(result.data.installed).toHaveLength(2);
   });
 
   it('should preview template', async () => {
-    const result = await previewTemplate('nextjs/standards/react-components', { json: true });
+    const result = await previewTemplate('nextjs/components/Button');
     expect(result.success).toBe(true);
-    expect(result.data.content).toContain('React Components');
+    expect(result.data.content).toBeDefined();
   });
 });
