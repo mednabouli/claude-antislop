@@ -3,11 +3,19 @@ import { join } from 'path';
 
 const MEMORY_DIR = join(process.env.HOME || process.env.USERPROFILE || '', '.claude-antislop', 'memory');
 
-export function initMemory() {
-  if (!existsSync(MEMORY_DIR)) {
+export function initMemory(options = {}) {
+  const { force } = options;
+  
+  if (!existsSync(MEMORY_DIR) || force) {
     mkdirSync(MEMORY_DIR, { recursive: true });
   }
-  return { success: true, path: MEMORY_DIR };
+  return { 
+    success: true, 
+    path: MEMORY_DIR,
+    data: {
+      categories: ['standards', 'patterns', 'snippets', 'templates', 'docs']
+    }
+  };
 }
 
 export function writeMemory(file, content) {
@@ -51,5 +59,13 @@ export function memoryWrite(file, content) {
 }
 
 export function collectMemory() {
-  return { success: true, data: { files: [] } };
+  return { 
+    success: true, 
+    data: { 
+      files: [],
+      standards: [],
+      patterns: [],
+      snippets: []
+    } 
+  };
 }
