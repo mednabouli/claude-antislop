@@ -30,3 +30,7 @@ export async function exportMemory(options = {}) {
 export function collectMemory() {
   return { success: true, data: { files: [] } };
 }
+
+export function listBackups() {
+  return { success: true, data: { backups: [] } };
+}
