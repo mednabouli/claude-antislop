@@ -62,3 +62,7 @@ export function getSupportedLocales() {
 export function initializeI18n(locale = 'en') {
   return { locale, t: (key, params) => t(key, params, locale) };
 }
+
+export function isNo(value) {
+  return value === 'no' || value === 'n' || value === false;
+}
