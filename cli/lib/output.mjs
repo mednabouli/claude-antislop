@@ -25,3 +25,11 @@ export function formatOutput(data, options = {}) {
 
   return { success: true, message: 'Output formatted' };
 }
+
+export function createErrorResponse(error) {
+  return {
+    success: false,
+    error: error.message || 'Unknown error',
+    timestamp: new Date().toISOString()
+  };
+}
