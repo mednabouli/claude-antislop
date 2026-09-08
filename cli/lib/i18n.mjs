@@ -1,28 +1,58 @@
-import fs from 'fs-extra';
-import { join } from 'path';
-const SUPPORTED_LOCALES = ['en', 'fr', 'es', 'de', 'zh', 'ja'];
-const DEFAULT_LOCALE = 'en';
-const HOME_DIR = process.env.HOME || process.env.USERPROFILE;
-const CONFIG_PATH = join(HOME_DIR, '.claude-antislop', 'config.json');
-const translations = {
-  en: { 'success.install': 'Installation complete', 'success.status': 'Status check complete', 'success.scan': 'Scan complete', 'success.learn': 'Learning complete', 'success.memoryInit': 'Memory initialized', 'success.memoryWrite': 'Memory written', 'success.quality': 'Quality check complete', 'success.completion': 'Completion installed for {shell}', 'success.wizard': 'Setup complete', 'error.install': 'Installation failed', 'error.status': 'Status check failed', 'error.scan': 'Scan failed', 'error.learn': 'Learning failed', 'error.memory': 'Memory operation failed', 'error.quality': 'Quality check failed', 'error.completion': 'Completion failed', 'error.wizard': 'Setup wizard failed', 'error.unsupportedShell': 'Unsupported shell: {shell}', 'error.invalidLocale': 'Unsupported locale: {locale}' },
-  fr: { 'success.install': 'Installation terminÃ©e', 'success.status': 'VÃ©rification du statut terminÃ©e', 'success.scan': 'Analyse terminÃ©e', 'success.learn': 'Apprentissage terminÃ©', 'success.memoryInit': 'MÃ©moire initialisÃ©e', 'success.memoryWrite': 'MÃ©moire enregistrÃ©e', 'success.quality': 'VÃ©rification de qualitÃ© terminÃ©e', 'success.completion': 'ComplÃ©tion installÃ©e pour {shell}', 'success.wizard': 'Configuration terminÃ©e', 'error.install': 'Ã©chec de l\'installation', 'error.status': 'Ã©chec de la vÃ©rification du statut', 'error.scan': 'Ã©chec de l\'analyse', 'error.learn': 'Ã©chec de l\'apprentissage', 'error.memory': 'Ã©chec de l\'opÃ©ration de mÃ©moire', 'error.quality': 'Ã©chec de la vÃ©rification de qualitÃ©', 'error.completion': 'Ã©chec de la complÃ©tion', 'error.wizard': 'Ã©chec de l\'assistant de configuration', 'error.unsupportedShell': 'Shell non pris en charge : {shell}', 'error.invalidLocale': 'Langue non prise en charge : {locale}' },
-  es: { 'success.install': 'InstalaciÃ³n completada', 'success.status': 'ComprobaciÃ³n de estado completada', 'success.scan': 'AnÃ¡lisis completado', 'success.learn': 'Aprendizaje completado', 'success.memoryInit': 'Memoria inicializada', 'success.memoryWrite': 'Memoria guardada', 'success.quality': 'ComprobaciÃ³n de calidad completada', 'success.completion': 'Autocompletado instalado para {shell}', 'success.wizard': 'ConfiguraciÃ³n completada', 'error.install': 'Error de instalaciÃ³n', 'error.status': 'Error al comprobar el estado', 'error.scan': 'Error de anÃ¡lisis', 'error.learn': 'Error de aprendizaje', 'error.memory': 'Error de operaciÃ³n de memoria', 'error.quality': 'Error de comprobaciÃ³n de calidad', 'error.completion': 'Error de autocompletado', 'error.wizard': 'Error del asistente de configuraciÃ³n', 'error.unsupportedShell': 'Shell no compatible: {shell}', 'error.invalidLocale': 'Idioma no compatible: {locale}' },
-  de: { 'success.install': 'Installation abgeschlossen', 'success.status': 'StatusprÃ¼fung abgeschlossen', 'success.scan': 'Scan abgeschlossen', 'success.learn': 'Lernen abgeschlossen', 'success.memoryInit': 'Speicher initialisiert', 'success.memoryWrite': 'Speicher gespeichert', 'success.quality': 'QualitÃ¤tsprÃ¼fung abgeschlossen', 'success.completion': 'VervollstÃ¤ndigung fÃ¼r {shell} installiert', 'success.wizard': 'Einrichtung abgeschlossen', 'error.install': 'Installation fehlgeschlagen', 'error.status': 'StatusprÃ¼fung fehlgeschlagen', 'error.scan': 'Scan fehlgeschlagen', 'error.learn': 'Lernen fehlgeschlagen', 'error.memory': 'Speicheroperation fehlgeschlagen', 'error.quality': 'QualitÃ¤tsprÃ¼fung fehlgeschlagen', 'error.completion': 'VervollstÃ¤ndigung fehlgeschlagen', 'error.wizard': 'Einrichtungsassistent fehlgeschlagen', 'error.unsupportedShell': 'Nicht unterstÃ¼tzte Shell: {shell}', 'error.invalidLocale': 'Nicht unterstÃ¼tzte Sprache: {locale}' },
-  zh: { 'success.install': 'å®£è£½å®¢æ¾°', 'success.status': 'ç®¡æ¢£ç®¡æ¢¥å®¢æ¾°', 'success.scan': 'ç®¡æ¢¥å®¢æ¾°', 'success.learn': 'å®£è£½å®¢æ¾°', 'success.memoryInit': 'è¨¼æ¢¥å®¢æ¾°', 'success.memoryWrite': 'è¨¼æ¢¥å®¢æ¾°', 'success.quality': 'å®£è£½å®¢æ¾°', 'success.completion': 'å®£è£½å®¢æ¾° {shell}', 'success.wizard': 'è¨¼æ¢¥å®¢æ¾°', 'error.install': 'å®£è£½å¤±æ¢¥', 'error.status': 'ç®¡æ¢£ç®¡æ¢¥å¤±æ¢¥', 'error.scan': 'ç®¡æ¢¥å¤±æ¢¥', 'error.learn': 'å®£è£½å¤±æ¢¥', 'error.memory': 'è¨¼æ¢¥å¤±æ¢¥', 'error.quality': 'å®£è£½å¤±æ¢¥', 'error.completion': 'å®£è£½å¤±æ¢¥', 'error.wizard': 'è¨¼æ¢¥å¤±æ¢¥', 'error.unsupportedShell': 'äº¾ç®¡æ¢£ Shell: {shell}', 'error.invalidLocale': 'äº¾ç®¡æ¢£èªºè¨º: {locale}' },
-  ja: { 'success.install': 'ã¤³ã¥³ã¥¹ã¥¿ã¥¼ã¥«å®£è£½ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.status': 'ã¥¹ã¥¿ã¥¼ã¥¿ã¥¹ç¢ºèª¿ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.scan': 'ã¥¹ã¥¯ã¥£ã¥³å®£è£½ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.learn': 'å®£è£½å®¢æ¾°ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.memoryInit': 'è¨¼æ¢¥å®¢æ¾°ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.memoryWrite': 'è¨¼æ¢¥ä¿®å®£ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.quality': 'å®£è£½ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.completion': '{shell} ãè£½å®£ã·£ã¾£ã¿¾ã·£ã¿¾', 'success.wizard': 'è¨¼æ¢¥å®¢æ¾°ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.install': 'ã¤³ã¥³ã¥¹ã¥¿ã¥¼ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.status': 'ã¥¹ã¥¿ã¥¼ã¥¿ã¥¹ç¢ºèª¿ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.scan': 'ã¥¹ã¥¯ã¥£ã¥³ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.learn': 'å®£è£½ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.memory': 'è¨¼æ¢¥ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.quality': 'å®£è£½ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.completion': 'è£½å®£ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.wizard': 'è¨¼æ¢¥ã«±å¤±æ¢¥ã·£ã¾£ã¿¾ã·£ã¿¾', 'error.unsupportedShell': 'ã¥µã¥³ã¥¼ã¥¿ã¥µã¥¼ã¥¿ã¥¬ã¥·ã¥§ã¥«: {shell}', 'error.invalidLocale': 'ã¥µã¥³ã¥¼ã¥¿ã¥µã¥¼ã¥¿ã¥¬èªºè¨º: {locale}' }
+import { ui } from './ui.mjs';
+
+const LOCALES = {
+  en: { name: 'English', dir: 'ltr' },
+  fr: { name: 'Franç·ªis', dir: 'ltr' },
+  es: { name: 'Espa√√ol', dir: 'ltr' },
+  de: { name: 'Deutsch', dir: 'ltr' },
+  ja: { name: 'Ê£≠Ê£≠Ë™×¬≠', dir: 'ltr' },
+  zh: { name: '‰∏≠Ê£ñ¢¬®', dir: 'ltr' },
+  ar: { name: 'ÿß·Ñ¢ÿÆ·Ñ¢ÿ≥ÿ≠', dir: 'rtl' }
 };
-let currentLocale = DEFAULT_LOCALE;
-export async function initializeI18n(localeOverride = null) {
-  if (localeOverride) return setLocale(localeOverride);
-  try { if (await fs.pathExists(CONFIG_PATH)) { const config = await fs.readJson(CONFIG_PATH); const saved = config.locale || config.locales?.[0]; if (SUPPORTED_LOCALES.includes(saved)) { currentLocale = saved; return currentLocale; } } } catch {}
-  const envLocale = (process.env.LC_ALL || process.env.LC_MESSAGES || process.env.LANG || '').split(/[._-]/)[0];
-  if (SUPPORTED_LOCALES.includes(envLocale)) currentLocale = envLocale;
-  return currentLocale;
+
+export function getLocale(locale) {
+  if (!locale) {
+    return { locale: 'en', ...LOCALES.en };
+  }
+
+  const base = locale.split('-')[0].toLowerCase();
+  if (LOCALES[base]) {
+    return { locale: base, ...LOCALES[base] };
+  }
+
+  return { locale: 'en', ...LOCALES.en };
 }
-export function setLocale(locale) { if (!SUPPORTED_LOCALES.includes(locale)) throw new Error(t('error.invalidLocale', { locale })); currentLocale = locale; return currentLocale; }
-export function getLocale() { return currentLocale; }
-export function getSupportedLocales() { return [...SUPPORTED_LOCALES]; }
-export function t(key, values = {}) { const template = translations[currentLocale]?.[key] || translations.en[key] || key; return template.replace(/\{(\w+)\}/g, (_, name) => values[name] ?? `{${name}}`); }
-export function isYes(value) { return ['y','yes','o','oui','s','si','sí¹´','j','ja','æ²¯','ã¯²ã´¯'].includes(value.trim().toLowerCase()); }
-export function isNo(value) { return ['n','no','non','nein','å²¦','ã´¯ã´¯ã´¯'].includes(value.trim().toLowerCase()); }
+
+export function t(key, params = {}, locale = 'en') {
+  if (!key) {
+    return '';
+  }
+
+  const translations = {
+    en: {
+      'welcome': 'Welcome',
+      'error': 'Error',
+      'success': 'Success',
+      'loading': 'Loading...',
+      'unsupported_locale': 'Unsupported locale: {locale}'
+    },
+    fr: {
+      'welcome': 'Bienvenue',
+      'error': 'Erreur',
+      'success': 'Succ√™s',
+      'loading': 'Chargement...',
+      'unsupported_locale': 'Locale non prise en charge: {locale}'
+    }
+  };
+
+  const dict = translations[locale] || translations.en;
+  let text = dict[key] || key;
+
+  if (params) {
+    Object.keys(params).forEach(k => {
+      text = text.replace(`{${k}}`, params[k]);
+    });
+  }
+
+  return text;
+}
