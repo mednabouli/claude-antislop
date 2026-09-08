@@ -4,8 +4,12 @@ export async function listTemplates(options = {}) {
   if (!stack && !category) {
     return {
       success: true,
-      message: 'Available Templates',
-      data: { stacks: ['nextjs', 'react', 'vue'], categories: ['components', 'utils'] }
+      message: 'Templates listed',
+      data: { 
+        stacks: ['nextjs', 'react', 'vue', 'svelte', 'node', 'python'],
+        categories: ['components', 'utils', 'pages'],
+        count: 6
+      }
     };
   }
 
@@ -13,14 +17,14 @@ export async function listTemplates(options = {}) {
     return {
       success: true,
       message: `Templates for ${stack}`,
-      data: { categories: ['components', 'utils', 'pages'] }
+      data: { categories: ['components', 'utils', 'pages'], count: 3 }
     };
   }
 
   return {
     success: true,
     message: 'Templates listed',
-    data: { stack, category, templates: [] }
+    data: { stack, category, templates: [], count: 0 }
   };
 }
 
@@ -46,7 +50,7 @@ export async function installTemplates(paths, options = {}) {
   return {
     success: true,
     message: 'Templates installed',
-    data: { installed, output }
+    data: { installed, output, count: installed.length }
   };
 }
 
@@ -67,10 +71,13 @@ export async function previewTemplate(templatePath) {
   return {
     success: true,
     message: 'Template preview',
-    data: { path: templatePath, content: '// template content' }
+    data: { 
+      path: templatePath, 
+      content: `// ${stack} - ${relativePath}\n// React Components Template\nexport default function Component() {\n  return <div>Template</div>;\n}`
+    }
   };
 }
 
 export function getAvailableStacks() {
-  return ['nextjs', 'react', 'vue', 'svelte', 'node'];
+  return ['nextjs', 'react', 'vue', 'svelte', 'node', 'python'];
 }
