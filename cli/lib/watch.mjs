@@ -4,8 +4,8 @@ import { watch } from 'chokidar';
 export function watchDirectory(dir, options = {}) {
   const { extensions, ignore } = options;
 
-  if (!dir) {
-    throw new Error('Directory required');
+  if (!dir || typeof dir !== 'string') {
+    throw new Error('Directory path required as string');
   }
 
   const exts = extensions || ['.ts', '.tsx', '.js', '.jsx', '.vue', '.svelte', '.py', '.go', '.rs'];
