@@ -1,0 +1,14 @@
+{
+  "testEnvironment": "node",
+  "transform": {},
+  "moduleFileExtensions": ["js", "mjs"],
+  "testMatch": ["**/tests/**/*.test.js", "**/tests/**/*.test.mjs"],
+  "collectCoverageFrom": ["cli/**/*.mjs"],
+  "coverageThreshold": {
+    "global": {
+      "branches": 50,
+      "functions": 50,
+      "lines": 50
+    }
+  }
+}
