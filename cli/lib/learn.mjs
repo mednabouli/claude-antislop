@@ -17,3 +17,7 @@ export async function learnFromGit(repo, recent = 30) {
     }
   };
 }
+
+export async function learn(repo, options = {}) {
+  return learnFromGit(repo, options.recent || 30);
+}
