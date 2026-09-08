@@ -29,7 +29,7 @@ _commands=(
 
 _arguments '1: :->commands' && return 0
 
-case "$state" in
+case "\$state" in
   commands)
     _describe 'commands' _commands
     ;;
