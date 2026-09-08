@@ -6,7 +6,7 @@ import { scan } from './lib/scan.mjs';
 import { listTemplates, installTemplates, previewTemplate } from './lib/templates.mjs';
 import { watchDirectory } from './lib/watch.mjs';
 import { generateCompletion } from './lib/completion.mjs';
-import { getLocale, t } from './lib/i18n.mjs';
+import { getLocale } from './lib/i18n.mjs';
 import { ui } from './lib/ui.mjs';
 
 const args = process.argv.slice(2);
