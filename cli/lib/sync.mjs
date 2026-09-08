@@ -26,3 +26,7 @@ export async function exportMemory(options = {}) {
     data: { count: files.length, files }
   };
 }
+
+export function collectMemory() {
+  return { success: true, data: { files: [] } };
+}
