@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { initMemory } from './cli/lib/memory.mjs';
-import { learnFromGit } from './cli/lib/learn.mjs';
-import { scan } from './cli/lib/scan.mjs';
-import { listTemplates, installTemplates } from './cli/lib/templates.mjs';
-import { watchDirectory } from './cli/lib/watch.mjs';
-import { generateCompletion } from './cli/lib/completion.mjs';
-import { getLocale } from './cli/lib/i18n.mjs';
-import { ui } from './cli/lib/ui.mjs';
+import { initMemory, writeMemory, searchMemory } from './lib/memory.mjs';
+import { learnFromGit } from './lib/learn.mjs';
+import { scan } from './lib/scan.mjs';
+import { listTemplates, installTemplates, previewTemplate } from './lib/templates.mjs';
+import { watchDirectory } from './lib/watch.mjs';
+import { generateCompletion } from './lib/completion.mjs';
+import { getLocale, t } from './lib/i18n.mjs';
+import { ui } from './lib/ui.mjs';
 
 const args = process.argv.slice(2);
 const cmd = args[0];
@@ -48,9 +48,14 @@ try {
       ui.success(result.message);
     }
     if (subcmd === 'install') {
-      const path = args[2];
+      const tpath = args[2];
       const output = args[3] || './templates';
-      const result = installTemplates([path], { output });
+      const result = installTemplates([tpath], { output });
+      ui.success(result.message);
+    }
+    if (subcmd === 'preview') {
+      const tpath = args[2];
+      const result = previewTemplate(tpath);
       ui.success(result.message);
     }
   }
@@ -76,6 +81,27 @@ try {
   if (cmd === 'status') {
     ui.success('Plugin active');
     ui.success('Status check complete');
+  }
+
+  if (cmd === 'memory-write') {
+    const file = args[1];
+    const content = args[2];
+    if (!file || !content) {
+      throw new Error('File and content required');
+    }
+    const result = writeMemory(file, content);
+    ui.success('Memory written');
+    ui.info(`Location: ${result.path}`);
+  }
+
+  if (cmd === 'memory-search') {
+    const query = args[1];
+    if (!query) {
+      throw new Error('Query required');
+    }
+    const result = searchMemory(query);
+    ui.success(result.message);
+    ui.info(`Found: ${result.data.count}`);
   }
 
 } catch (error) {
