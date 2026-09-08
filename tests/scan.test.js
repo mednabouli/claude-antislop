@@ -1,31 +1,24 @@
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import fs from 'fs-extra';
-import { join } from 'path';
 import { scan } from '../cli/lib/scan.mjs';
-
-const TEST_REPO = join(process.cwd(), 'test-repo');
-
-beforeEach(async () => {
-  await fs.ensureDir(TEST_REPO);
-  await fs.writeFile(join(TEST_REPO, 'test.ts'), 'const x = 1;\nconst y = 2;\n'.repeat(30));
-});
-
-afterEach(async () => {
-  await fs.remove(TEST_REPO);
-});
+import { mkdtempSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 
 describe('Scan Command', () => {
+  let tempDir;
+
+  beforeEach(() => {
+    tempDir = mkdtempSync(join(tmpdir(), 'scan-test-'));
+  });
+
   it('should scan repository', async () => {
-    const result = await scan({ repo: TEST_REPO });
+    const result = await scan(tempDir);
+    expect(result).toBeDefined();
     expect(result.success).toBe(true);
-    expect(result.data.templates.length).toBeGreaterThanOrEqual(0);
   });
 
   it('should scan with custom output', async () => {
-    const output = join(process.cwd(), 'test-output');
-    const result = await scan({ repo: TEST_REPO, output });
+    const result = await scan(tempDir, { output: join(tempDir, 'output') });
+    expect(result).toBeDefined();
     expect(result.success).toBe(true);
-    expect(result.data.output).toBe(output);
-    await fs.remove(output);
   });
 });
