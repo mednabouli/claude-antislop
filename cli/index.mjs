@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { initMemory, writeMemory, searchMemory } from './lib/memory.mjs';
-import { learnFromGit } from './lib/learn.mjs';
+import { learnFromGit, learn } from './lib/learn.mjs';
 import { scan } from './lib/scan.mjs';
 import { listTemplates, installTemplates, previewTemplate } from './lib/templates.mjs';
 import { watchDirectory } from './lib/watch.mjs';
@@ -25,18 +25,18 @@ try {
     ui.info(`Location: ${result.path}`);
   }
 
-  if (cmd === 'learn-git') {
+  if (cmd === 'learn-git' || cmd === 'learn') {
     const repo = args[1] || process.cwd();
-    const recent = parseInt(args[2]) || 30;
-    const result = learnFromGit(repo, recent);
+    const recent = args[2] || '30d';
+    const result = cmd === 'learn' ? await learn({ repo, recent }) : learnFromGit(repo, parseInt(recent.replace('d', '')) || 30);
     ui.success(result.message);
-    ui.info(`Repository: ${result.data.repository}`);
+    ui.info(`Repository: ${result.data.repo || result.data.repository}`);
     ui.info(`Period: ${result.data.period}`);
   }
 
   if (cmd === 'scan') {
     const repo = args[1] || process.cwd();
-    const result = scan(repo);
+    const result = await scan(repo);
     ui.success(result.message);
     ui.info(`Files: ${result.data.files}`);
   }
@@ -44,18 +44,19 @@ try {
   if (cmd === 'templates') {
     const subcmd = args[1];
     if (subcmd === 'list') {
-      const result = listTemplates();
+      const result = await listTemplates();
       ui.success(result.message);
+      ui.info(`Stacks: ${result.data.stacks.join(', ')}`);
     }
     if (subcmd === 'install') {
       const tpath = args[2];
       const output = args[3] || './templates';
-      const result = installTemplates([tpath], { output });
+      const result = await installTemplates([tpath], { output });
       ui.success(result.message);
     }
     if (subcmd === 'preview') {
       const tpath = args[2];
-      const result = previewTemplate(tpath);
+      const result = await previewTemplate(tpath);
       ui.success(result.message);
     }
   }
@@ -105,6 +106,6 @@ try {
   }
 
 } catch (error) {
-  ui.error(`Error: ${error.message}`);
+  ui.error(`✗ Error: ${error.message}`);
   process.exit(1);
 }
