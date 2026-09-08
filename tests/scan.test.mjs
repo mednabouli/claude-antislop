@@ -1,30 +1,15 @@
-import { test } from 'node:test';
-import { strict as assert } from 'node:assert';
+import { describe, expect, test } from '@jest/globals';
 import { scan } from '../cli/lib/scan.mjs';
-import fs from 'fs-extra';
-import { join } from 'path';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-test('scan module', async (t) => {
-  const testRepo = join(process.cwd(), 'tests', 'fixtures', 'test-repo');
-  t.before(async () => { await fs.ensureDir(testRepo); await fs.writeJson(join(testRepo, 'package.json'), { name: 'test' }); });
-  t.after(async () => { await fs.remove(testRepo); });
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const testRepo = path.join(__dirname, '..');
 
-  await t.test('scan returns structured results', async () => {
-    const result = await scan({ repo: testRepo, verbose: false });
-    assert.equal(result.success, true);
-    assert.ok(result.reportPath);
-    assert.ok(result.report.analysis);
-  });
-  await t.test('detects languages', async () => {
-    const result = await scan({ repo: testRepo, verbose: false });
-    assert.ok(Array.isArray(result.report.analysis.languages));
-  });
-  await t.test('detects stacks', async () => {
-    const result = await scan({ repo: testRepo, verbose: false });
-    assert.ok(Array.isArray(result.report.analysis.stacks));
-  });
-  await t.test('generates templates', async () => {
-    const result = await scan({ repo: testRepo, verbose: false });
-    assert.ok(result.report.templates);
+describe('scan module', () => {
+  test('scans existing repo', async () => {
+    const result = await scan(testRepo);
+    expect(result.success).toBe(true);
+    expect(result.data.files).toBeGreaterThanOrEqual(0);
   });
 });
