@@ -1,13 +1,11 @@
-import { ui } from './ui.mjs';
-
 const LOCALES = {
   en: { name: 'English', dir: 'ltr' },
-  fr: { name: 'Franç·ªis', dir: 'ltr' },
-  es: { name: 'Espa√√ol', dir: 'ltr' },
+  fr: { name: 'Francais', dir: 'ltr' },
+  es: { name: 'Espanol', dir: 'ltr' },
   de: { name: 'Deutsch', dir: 'ltr' },
-  ja: { name: 'Ê£≠Ê£≠Ë™×¬≠', dir: 'ltr' },
-  zh: { name: '‰∏≠Ê£ñ¢¬®', dir: 'ltr' },
-  ar: { name: 'ÿß·Ñ¢ÿÆ·Ñ¢ÿ≥ÿ≠', dir: 'rtl' }
+  ja: { name: 'Nihongo', dir: 'ltr' },
+  zh: { name: 'Zhongwen', dir: 'ltr' },
+  ar: { name: 'Arabic', dir: 'rtl' }
 };
 
 export function getLocale(locale) {
@@ -39,7 +37,7 @@ export function t(key, params = {}, locale = 'en') {
     fr: {
       'welcome': 'Bienvenue',
       'error': 'Erreur',
-      'success': 'Succ√™s',
+      'success': 'Succes',
       'loading': 'Chargement...',
       'unsupported_locale': 'Locale non prise en charge: {locale}'
     }
