@@ -4,8 +4,8 @@ export function generateCompletion(shell) {
       file: 'claude-antislop.bash',
       content: `# Claude Antislop Bash Completion
 _complete_claude_antislop() {
-  local cur="\${COMP_WORDS[COMP_CWORD]}"
-  COMPREPLY=( \$(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "\${cur}") )
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "${cur}") )
 }
 complete -F _complete_claude_antislop claude-antislop
 `
@@ -29,7 +29,7 @@ _commands=(
 
 _arguments '1: :->commands' && return 0
 
-case "\$state" in
+case "$state" in
   commands)
     _describe 'commands' _commands
     ;;
