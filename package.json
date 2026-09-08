@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint cli/ tests/ --ext .mjs,.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "echo 'Build complete'"
+    "build": "echo 'Build complete'",
+    "benchmark": "echo 'Running benchmarks' && node tests/benchmarks/run.mjs"
   },
   "engines": {
     "node": ">=24.0.0"
