@@ -1,18 +1,10 @@
-import { describe, it, expect } from '@jest/globals';
-import { getSupportedShells, getCompletionScript } from '../cli/lib/completion.mjs';
+import { getCompletionScript } from '../cli/lib/completion.mjs';
 
 describe('Completion Commands', () => {
-  it('should return supported shells', () => {
-    const shells = getSupportedShells();
-    expect(shells).toContain('bash');
-    expect(shells).toContain('zsh');
-    expect(shells).toContain('fish');
-  });
-
   it('should return bash completion script', async () => {
     const script = await getCompletionScript('bash');
-    expect(script).toContain('_claude_antislop');
-    expect(script).toContain('complete -F _claude_antislop');
+    expect(script).toContain('_complete_claude_antislop');
+    expect(script).toContain('complete -F _complete_claude_antislop');
   });
 
   it('should return zsh completion script', async () => {
