@@ -1,6 +1,4 @@
-import { ui } from './ui.mjs';
-
-export async function generateCompletion(shell) {
+export function generateCompletion(shell) {
   const configs = {
     bash: {
       file: 'claude-antislop.bash',
@@ -29,11 +27,9 @@ _commands=(
   'status:Show status'
 )
 
-_arguments \\
-  '1: :->commands' \\
-  && return 0
+_arguments '1: :->commands' && return 0
 
-case \"$state\" in
+case "$state" in
   commands)
     _describe 'commands' _commands
     ;;
