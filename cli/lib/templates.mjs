@@ -1,8 +1,4 @@
-import { ui } from './ui.mjs';
 import { join } from 'path';
-import { pathExists, readFile, ensureDir } from 'fs-extra';
-
-const TEMPLATES_DIR = join(process.env.HOME || '', '.claude-antislop', 'templates');
 
 export async function listTemplates(options = {}) {
   const { stack, category } = options;
@@ -48,8 +44,6 @@ export async function installTemplates(paths, options = {}) {
     }
     installed.push(p);
   }
-
-  await ensureDir(output);
 
   return {
     success: true,
