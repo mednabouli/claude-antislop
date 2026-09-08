@@ -33,3 +33,11 @@ export function createErrorResponse(error) {
     timestamp: new Date().toISOString()
   };
 }
+
+export function createResponse(data) {
+  return {
+    success: true,
+    data,
+    timestamp: new Date().toISOString()
+  };
+}
