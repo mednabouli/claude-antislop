@@ -30,6 +30,7 @@ export function createErrorResponse(error) {
   return {
     success: false,
     error: error.message || 'Unknown error',
+    message: error.message || 'Unknown error',
     timestamp: new Date().toISOString()
   };
 }
@@ -42,10 +43,11 @@ export function createResponse(data) {
   };
 }
 
-export function createSuccessResponse(data) {
+export function createSuccessResponse(message, options = {}) {
+  const { data } = options;
   return {
     success: true,
-    message: 'Success',
+    message: message || 'Success',
     data,
     timestamp: new Date().toISOString()
   };
