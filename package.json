@@ -15,7 +15,9 @@
     "lint:fix": "eslint cli/ tests/ --ext .mjs,.js --fix",
     "format": "prettier --write \"cli/**/*.mjs\" \"tests/**/*.js\" \"docs/**/*.md\"",
     "format:check": "prettier --check \"cli/**/*.mjs\" \"tests/**/*.js\" \"docs/**/*.md\"",
-    "check": "npm run lint && npm run format:check && npm test"
+    "check": "npm run lint && npm run format:check && npm test",
+    "release": "npx semantic-release",
+    "release:dry": "npx semantic-release --dry-run"
   },
   "keywords": [
     "code-quality",
@@ -33,11 +35,20 @@
     "chokidar": "^3.5.3"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^11.1.0",
+    "@semantic-release/github": "^9.2.6",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/release-notes-generator": "^12.1.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
     "eslint": "^8.56.0",
     "jest": "^29.7.0",
-    "prettier": "^3.1.1"
+    "prettier": "^3.1.1",
+    "semantic-release": "^23.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
