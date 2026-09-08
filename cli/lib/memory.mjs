@@ -46,6 +46,10 @@ export function memorySearch(query, options = {}) {
   return searchMemory(query, options);
 }
 
+export function memoryWrite(file, content) {
+  return writeMemory(file, content);
+}
+
 export function collectMemory() {
   return { success: true, data: { files: [] } };
 }
