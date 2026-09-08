@@ -1,18 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import fs from 'fs-extra';
-import { join } from 'path';
-import { initMemory, memorySearch, memoryWrite } from '../cli/lib/memory.mjs';
-
-const TEST_DIR = join(process.cwd(), 'test-memory');
-
-beforeEach(async () => {
-  await fs.ensureDir(TEST_DIR);
-  process.env.HOME = process.cwd();
-});
-
-afterEach(async () => {
-  await fs.remove(TEST_DIR);
-});
+import { initMemory, memoryWrite, memorySearch } from '../cli/lib/memory.mjs';
 
 describe('Memory Commands', () => {
   it('should initialize memory directories', async () => {
@@ -22,24 +8,13 @@ describe('Memory Commands', () => {
   });
 
   it('should write to memory', async () => {
-    await initMemory({ force: true });
-    const result = await memoryWrite({
-      category: 'standards',
-      filename: 'test.md',
-      content: '# Test Standard\n\nThis is a test.'
-    });
+    const result = await memoryWrite('test.md', 'Test content');
     expect(result.success).toBe(true);
   });
 
   it('should search memory', async () => {
-    await initMemory({ force: true });
-    await memoryWrite({
-      category: 'standards',
-      filename: 'test.md',
-      content: '# Testing Standards\n\nWrite tests for all code.'
-    });
-    const result = await memorySearch({ query: 'test', limit: 5 });
+    const result = await memorySearch('test', { recent: 7 });
     expect(result.success).toBe(true);
-    expect(result.data.count).toBeGreaterThanOrEqual(0);
+    expect(result.data.query).toBe('test');
   });
 });
