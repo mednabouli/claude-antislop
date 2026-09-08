@@ -41,3 +41,11 @@ export function searchMemory(query, options = {}) {
     data: { query, recent, type, count: 0, results: [] }
   };
 }
+
+export function memorySearch(query, options = {}) {
+  return searchMemory(query, options);
+}
+
+export function collectMemory() {
+  return { success: true, data: { files: [] } };
+}
