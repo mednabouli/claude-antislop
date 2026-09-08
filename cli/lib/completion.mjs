@@ -62,3 +62,7 @@ complete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory
 
   return { success: false, error: 'Shell not supported' };
 }
+
+export function getCompletionScript(shell) {
+  return generateCompletion(shell);
+}
