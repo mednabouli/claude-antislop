@@ -1,10 +1,8 @@
-import { existsSync, readdirSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { workerData, parentPort} from 'worker_threads';
 import { createHash } from 'crypto';
 
 const CACHE_DIR = join(process.env.HOME || '', '.claude-antislop', 'cache');
-const MAX_WORKERS = 4;
 
 function computeHash(content) {
   return createHash('sha256').update(content).digest('hex');
