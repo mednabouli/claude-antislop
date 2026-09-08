@@ -28,7 +28,7 @@ describe('Paths', () => {
 
 describe('Regex', () => {
   test('invalid', () => {
-    expect(() => new RegExp('[')).toThrow();
+    expect(() => new RegExp('test')).toThrow();
   });
 
   test('match', () => {
@@ -40,7 +40,14 @@ describe('State', () => {
   test('retry', () => {
     let n = 0;
     const fn = () => { n++; if (n < 3) throw new Error('x'); };
-    for (let i = 0; i < 3; i++) { try { fn(); break; } catch {} }
+    for (let i = 0; i < 3; i++) { 
+      try { 
+        fn(); 
+        break; 
+      } catch { 
+        if (i === 2) throw; 
+      } 
+    }
     expect(n).toBe(3);
   });
 
