@@ -8,10 +8,9 @@ const CLI = 'node ' + join(__dirname, '..', '..', 'cli', 'index.mjs');
 
 function execAsync(cmd) {
   return new Promise((resolve, reject) => {
-    const child = require('child_process').exec(cmd, { shell: true }, (error, stdout, stderr) => {
-      if (error) reject(error);
-      else resolve({ stdout, stderr });
-    });
+    execSync(cmd, { shell: true, encoding: 'utf8' })
+      .then(stdout => resolve({ stdout, stderr: '' }))
+      .catch(err => reject(err));
   });
 }
 
@@ -33,7 +32,7 @@ describe('CLI Integration Tests', () => {
 
   test('should handle missing query', async () => {
     try {
-      await execAsync(`${CLI} scan`);
+      await execSync(`${CLI} scan`, { shell: true });
     } catch (err) {
       expect(err.message).toContain('Repository');
     }
