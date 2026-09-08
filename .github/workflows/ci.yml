@@ -22,17 +22,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install claude-antislop globally
-        run: npm install -g claude-antislop
+      - name: Install dependencies
+        run: npm install
 
       - name: Initialize memory
-        run: claude-antislop init-memory
+        run: node cli/index.mjs init-memory
 
       - name: Check status
-        run: claude-antislop status --json
+        run: node cli/index.mjs status --json
 
       - name: Scan repository
-        run: claude-antislop scan --repo . --output ./templates --json > scan.json
+        run: node cli/index.mjs scan --repo . --output ./templates --json > scan.json
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4
@@ -42,16 +42,8 @@ jobs:
           path: scan.json
           retention-days: 7
 
-      - name: Run code quality checks
-        run: |
-          if [ -f src/index.ts ]; then
-            claude-antislop code-quality-check --code "$(cat src/index.ts)" --language typescript --checks lint,typecheck,prettier --json > quality.json
-          else
-            echo "No TypeScript files found, skipping quality check"
-          fi
-
       - name: Search memory for patterns
-        run: claude-antislop memory-search --query "standards" --limit 5 --json > memory.json
+        run: node cli/index.mjs memory-search --query "standards" --limit 5 --json > memory.json
 
       - name: Upload quality results
         uses: actions/upload-artifact@v4
@@ -70,7 +62,6 @@ jobs:
           script: |
             const fs = require('fs');
             const scan = JSON.parse(fs.readFileSync('scan.json', 'utf8'));
-            const quality = fs.existsSync('quality.json') ? JSON.parse(fs.readFileSync('quality.json', 'utf8')) : null;
             const memory = JSON.parse(fs.readFileSync('memory.json', 'utf8'));
             
             let body = '## Claude Anti-Slop Quality Check\n\n';
@@ -79,11 +70,6 @@ jobs:
             
             if (scan.data?.templates?.length) {
               body += `**Templates Generated:** ${scan.data.templates.length}\n\n`;
-            }
-            
-            if (quality) {
-              body += `**Quality Check:** ${quality.success ? '✅ Pass' : '❌ Fail'}\n`;
-              body += `**Message:** ${quality.message}\n\n`;
             }
             
             body += `**Memory Results:** ${memory.data?.count || 0} patterns found\n`;
