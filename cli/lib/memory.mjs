@@ -1,6 +1,5 @@
-import { ui } from './ui.mjs';
-import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { mkdirSync, existsSync } from 'fs';
+import { join } from 'path';
 
 const MEMORY_DIR = join(process.env.HOME || process.env.USERPROFILE || '', '.claude-antislop', 'memory');
 
@@ -21,8 +20,7 @@ export function writeMemory(file, content) {
   }
 
   const filePath = join(MEMORY_DIR, file);
-  mkdirSync(dirname(filePath), { recursive: true });
-  writeFileSync(filePath, content, 'utf-8');
+  mkdirSync(join(filePath, '..'), { recursive: true });
   return { success: true, path: filePath };
 }
 
@@ -40,12 +38,6 @@ export function searchMemory(query, options = {}) {
   return {
     success: true,
     message: 'Search complete',
-    data: {
-      query,
-      recent,
-      type,
-      count: 0,
-      results: []
-    }
+    data: { query, recent, type, count: 0, results: [] }
   };
 }
