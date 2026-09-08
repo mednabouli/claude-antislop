@@ -70,3 +70,7 @@ export async function previewTemplate(templatePath) {
     data: { path: templatePath, content: '// template content' }
   };
 }
+
+export function getAvailableStacks() {
+  return ['nextjs', 'react', 'vue', 'svelte', 'node'];
+}
