@@ -1,5 +1,3 @@
-import { join } from 'path';
-
 export async function listTemplates(options = {}) {
   const { stack, category } = options;
 
