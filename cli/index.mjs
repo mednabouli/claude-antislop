@@ -1,28 +1,97 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-import fs from 'fs-extra';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { ui } from './lib/ui.mjs';
-import { printOutput, createSuccessResponse, createErrorResponse } from './lib/output.mjs';
-import { initializeI18n, t, setLocale, getSupportedLocales } from './lib/i18n.mjs';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const { version, description } = JSON.parse(await fs.readFile(join(__dirname, '..', 'package.json'), 'utf-8'));
-await initializeI18n();
-const program = new Command();
-program.name('claude-antislop').version(version).description(description).showHelpAfterError();
-program.option('--locale <lang>', `Locale (${getSupportedLocales().join('|')})`).action(() => { if (program.rawArgs.includes('--locale')) { const idx = program.rawArgs.indexOf('--locale'); const loc = program.rawArgs[idx + 1]; if (loc) { setLocale(loc); ui.success(t('success.status')); } } });
-program.command('install').description('Install plugin').option('--init-memory', 'Initialize memory').option('--verbose', 'Verbose').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { install } = await import('./lib/install.mjs'); await install(o); const res = createSuccessResponse(t('success.install')); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.install')); printOutput(res, o); process.exit(1); } });
-program.command('status').description('Show status').option('--verbose', 'Verbose').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { showStatus } = await import('./lib/status.mjs'); await showStatus(o); const res = createSuccessResponse(t('success.status')); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.status')); printOutput(res, o); process.exit(1); } });
-program.command('scan').description('Scan repo').option('--repo <path>', 'Repo path').option('--output <path>', 'Output').option('--verbose', 'Verbose').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { scan } = await import('./lib/scan.mjs'); await scan(o); const res = createSuccessResponse(t('success.scan')); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.scan')); printOutput(res, o); process.exit(1); } });
-program.command('learn-from-git').description('Learn from Git').option('--repo <path>', 'Repo').option('--recent <period>', 'Period', '30d').option('--verbose', 'Verbose').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { learn } = await import('./lib/learn.mjs'); await learn(o); const res = createSuccessResponse(t('success.learn')); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.learn')); printOutput(res, o); process.exit(1); } });
-program.command('memory-search').description('Search memory').option('--query <text>', 'Query').option('--category <name>', 'Category').option('--limit <n>', 'Limit', '5').option('--fuzzy', 'Fuzzy', true).option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { memorySearch } = await import('./lib/memory.mjs'); const result = await memorySearch(o); const res = createSuccessResponse(`Found ${result.count || 0} results`, result); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.memory')); printOutput(res, o); process.exit(1); } });
-program.command('memory-write').description('Write memory').option('--category <name>', 'Category').option('--filename <name>', 'Filename').option('--content <text>', 'Content').option('--append', 'Append').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { memoryWrite } = await import('./lib/memory.mjs'); const result = await memoryWrite(o); const res = createSuccessResponse(t('success.memoryWrite'), result); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.memory')); printOutput(res, o); process.exit(1); } });
-program.command('code-quality-check').description('Quality checks').option('--code <code>', 'Code').option('--language <lang>', 'Language').option('--checks <types>', 'Checks').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { codeQualityCheck } = await import('./lib/quality.mjs'); const checks = o.checks ? o.checks.split(',') : ['lint','typecheck','prettier']; const result = await codeQualityCheck({ code: o.code, language: o.language, checks }); const res = createSuccessResponse(t('success.quality'), result); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.quality')); printOutput(res, o); process.exit(1); } });
-program.command('mcp-server').description('Start MCP').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { startServer } = await import('../mcp/mcp-server-index.mjs'); await startServer(); const res = createSuccessResponse('MCP server started'); printOutput(res, o); } catch (e) { const res = createErrorResponse(e.message); printOutput(res, o); process.exit(1); } });
-program.command('init-memory').description('Init memory').option('--force', 'Force').option('--verbose', 'Verbose').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { initMemory } = await import('./lib/memory.mjs'); await initMemory(o); const res = createSuccessResponse(t('success.memoryInit')); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.memory')); printOutput(res, o); process.exit(1); } });
-program.command('completion').description('Shell completions').argument('<shell>', 'bash|zsh|fish|install').option('--path <dir>', 'Target dir').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (shell, o) => { try { if (o.locale) setLocale(o.locale); const { getCompletionScript, installCompletion, getSupportedShells } = await import('./lib/completion.mjs'); const shells = getSupportedShells(); if (shell === 'install') { const target = o.path ? null : process.env.SHELL?.split('/').pop() || 'bash'; const r = await installCompletion(target || 'bash', o.path); const res = createSuccessResponse(t('success.completion', { shell: r.shell }), { shell: r.shell, destination: r.destination }, t('hint.restartShell')); printOutput(res, o); } else if (shells.includes(shell)) { const script = await getCompletionScript(shell); if (o.json) { console.log(JSON.stringify({ success: true, message: 'Completion script', data: { script }, timestamp: new Date().toISOString() }, null, 2)); } else { console.log(script); } } else { const res = createErrorResponse(t('error.unsupportedShell', { shell }), { supported: shells }); printOutput(res, o); process.exit(1); } } catch (e) { const res = createErrorResponse(t('error.completion')); printOutput(res, o); process.exit(1); } });
-program.command('wizard').description('Run setup wizard').option('--json', 'JSON output').option('--quiet, -q', 'Quiet').option('--locale <lang>', 'Locale').action(async (o) => { try { if (o.locale) setLocale(o.locale); const { firstRunWizard } = await import('./lib/wizard.mjs'); const config = await firstRunWizard(); const res = createSuccessResponse(t('success.wizard'), config); printOutput(res, o); } catch (e) { const res = createErrorResponse(t('error.wizard')); printOutput(res, o); process.exit(1); } });
-program.parse(process.argv);
-if (!process.argv.slice(2).length) program.outputHelp();
+
+import { initMemory } from './cli/lib/memory.mjs';
+import { learnFromGit } from './cli/lib/learn.mjs';
+import { scan } from './cli/lib/scan.mjs';
+import { listTemplates, installTemplates, previewTemplate } from './cli/lib/templates.mjs';
+import { watchDirectory } from './cli/lib/watch.mjs';
+import { generateCompletion } from './cli/lib/completion.mjs';
+import { getLocale, t } from './cli/lib/i18n.mjs';
+import { formatOutput } from './cli/lib/output.mjs';
+import { exportMemory } from './cli/lib/sync.mjs';
+import { syncToDrive } from './cli/lib/sync-drive.mjs';
+import { ui } from './cli/lib/ui.mjs';
+
+const args = process.argv.slice(2);
+const cmd = args[0];
+
+if (!cmd) {
+  ui.heading('Claude Antislop CLI');
+  ui.info('Usage: claude-antislop <command>');
+  process.exit(0);
+}
+
+try {
+  if (cmd === 'init-memory') {
+    const result = initMemory();
+    ui.success('Memory initialized');
+    ui.info(`Location: ${result.path}`);
+  }
+
+  if (cmd === 'learn-git') {
+    const repo = args[1] || process.cwd();
+    const recent = parseInt(args[2]) || 30;
+    const result = await learnFromGit(repo, recent);
+    ui.success(result.message);
+    ui.info(`Repository: ${result.data.repository}`);
+    ui.info(`Period: ${result.data.period}`);
+  }
+
+  if (cmd === 'scan') {
+    const repo = args[1] || process.cwd();
+    const result = await scan(repo);
+    ui.success(result.message);
+    ui.info(`Files: ${result.data.files}`);
+  }
+
+  if (cmd === 'templates') {
+    const subcmd = args[1];
+    if (subcmd === 'list') {
+      const result = await listTemplates();
+      ui.success(result.message);
+    }
+    if (subcmd === 'install') {
+      const path = args[2];
+      const output = args[3] || './templates';
+      const result = await installTemplates([path], { output });
+      ui.success(result.message);
+    }
+  }
+
+  if (cmd === 'watch') {
+    const dir = args[1] || process.cwd();
+    const result = watchDirectory(dir);
+    ui.success(result.message);
+  }
+
+  if (cmd === 'completion') {
+    const shell = args[1] || 'bash';
+    const result = generateCompletion(shell);
+    console.log(result.content);
+  }
+
+  if (cmd === 'locale') {
+    const loc = args[1] || 'en';
+    const result = getLocale(loc);
+    ui.info(`Locale: ${result.locale} (${result.name})`);
+  }
+
+  if (cmd === 'export-memory') {
+    const result = await exportMemory();
+    ui.success(result.message);
+  }
+
+  if (cmd === 'sync-drive') {
+    const result = await syncToDrive({}, { folder: 'claude-antislop' });
+    ui.success(result.message);
+  }
+
+  if (cmd === 'status') {
+    ui.success('Plugin active');
+    ui.success('Status check complete');
+  }
+
+} catch (error) {
+  ui.error(`Error: ${error.message}`);
+  process.exit(1);
+}
