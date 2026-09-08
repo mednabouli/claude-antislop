@@ -1,8 +1,3 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export async function learnFromGit(repo, recent = 30) {
   if (!repo) {
     throw new Error('Repository path required');
