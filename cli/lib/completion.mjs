@@ -1,32 +1,68 @@
-import fs from 'fs-extra';
-import { homedir } from 'os';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
 import { ui } from './ui.mjs';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const COMPLETION_DIR = join(__dirname, '..', 'completions');
-const SHELLS = {
-  bash: { file: 'claude-antislop.bash', candidates: [join(homedir(), '.local', 'share', 'bash-completion', 'completions'), join(homedir(), '.bash_completion.d')] },
-  zsh: { file: '_claude-antislop', candidates: [join(homedir(), '.zsh', 'completions'), join(homedir(), '.zfunc')] },
-  fish: { file: 'claude-antislop.fish', candidates: [join(homedir(), '.config', 'fish', 'completions')] }
-};
-export function getSupportedShells() {
-  return Object.keys(SHELLS);
+
+export async function generateCompletion(shell) {
+  const configs = {
+    bash: {
+      file: 'claude-antislop.bash',
+      content: `# Claude Antislop Bash Completion
+_complete_claude_antislop() {
+  local cur="\${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "\${cur}") )
 }
-export async function getCompletionScript(shell) {
-  const definition = SHELLS[shell];
-  if (!definition) throw new Error(`Unsupported shell: ${shell}. Supported: ${getSupportedShells().join(', ')}`);
-  return fs.readFile(join(COMPLETION_DIR, definition.file), 'utf8');
-}
-export async function installCompletion(shell, targetDirectory) {
-  const definition = SHELLS[shell];
-  if (!definition) throw new Error(`Unsupported shell: ${shell}. Supported: ${getSupportedShells().join(', ')}`);
-  const destinationDirectory = targetDirectory || definition.candidates[0];
-  if (!destinationDirectory) throw new Error(`No default directory for ${shell}. Provide --path.`);
-  const source = join(COMPLETION_DIR, definition.file);
-  const destination = join(destinationDirectory, definition.file);
-  await fs.ensureDir(destinationDirectory);
-  await fs.copyFile(source, destination);
-  return { shell, destination, restartHint: `Start new ${shell} session` };
+complete -F _complete_claude_antislop claude-antislop
+`
+    },
+    zsh: {
+      file: '_claude-antislop',
+      content: `# Claude Antislop Zsh Completion
+#compdef claude-antislop
+
+local -a _commands
+_commands=(
+  'init-memory:Initialize memory system'
+  'memory-write:Write to memory'
+  'memory-search:Search memory'
+  'memory-sync:Sync memory'
+  'scan:Scan repository'
+  'templates:Manage templates'
+  'code-quality-check:Check code quality'
+  'status:Show status'
+)
+
+_arguments \\
+  '1: :->commands' \\
+  && return 0
+
+case \"$state\" in
+  commands)
+    _describe 'commands' _commands
+    ;;
+esac
+`
+    },
+    fish: {
+      file: 'claude-antislop.fish',
+      content: `# Claude Antislop Fish Completion
+complete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory memory-write memory-search memory-sync scan templates code-quality-check status"
+`
+    }
+  };
+
+  if (!configs[shell]) {
+    throw new Error('Unsupported shell');
+  }
+
+  if (shell === 'bash') {
+    return { success: true, file: configs.bash.file, content: configs.bash.content };
+  }
+
+  if (shell === 'zsh') {
+    return { success: true, file: configs.zsh.file, content: configs.zsh.content };
+  }
+
+  if (shell === 'fish') {
+    return { success: true, file: configs.fish.file, content: configs.fish.content };
+  }
+
+  return { success: false, error: 'Shell not supported' };
 }
