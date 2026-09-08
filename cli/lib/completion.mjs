@@ -2,45 +2,15 @@ export function generateCompletion(shell) {
   const configs = {
     bash: {
       file: 'claude-antislop.bash',
-      content: `# Claude Antislop Bash Completion
-_complete_claude_antislop() {
-  local cur="${COMP_WORDS[COMP_CWORD]}"
-  COMPREPLY=( $(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "${cur}") )
-}
-complete -F _complete_claude_antislop claude-antislop
-`
+      content: '# Claude Antislop Bash Completion\n_complete_claude_antislop() {\n  local cur="${COMP_WORDS[COMP_CWORD]}"\n  COMPREPLY=( $(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "${cur}") )\n}\ncomplete -F _complete_claude_antislop claude-antislop\n'
     },
     zsh: {
       file: '_claude-antislop',
-      content: `# Claude Antislop Zsh Completion
-#compdef claude-antislop
-
-local -a _commands
-_commands=(
-  'init-memory:Initialize memory system'
-  'memory-write:Write to memory'
-  'memory-search:Search memory'
-  'memory-sync:Sync memory'
-  'scan:Scan repository'
-  'templates:Manage templates'
-  'code-quality-check:Check code quality'
-  'status:Show status'
-)
-
-_arguments '1: :->commands' && return 0
-
-case "$state" in
-  commands)
-    _describe 'commands' _commands
-    ;;
-esac
-`
+      content: '# Claude Antislop Zsh Completion\n#compdef claude-antislop\n\nlocal -a _commands\n_commands=(\n  \'init-memory:Initialize memory system\'\n  \'memory-write:Write to memory\'\n  \'memory-search:Search memory\'\n  \'memory-sync:Sync memory\'\n  \'scan:Scan repository\'\n  \'templates:Manage templates\'\n  \'code-quality-check:Check code quality\'\n  \'status:Show status\'\n)\n\n_arguments \'1: :->commands\' && return 0\n\ncase "$state" in\n  commands)\n    _describe \'commands\' _commands\n    ;;\nesac\n'
     },
     fish: {
       file: 'claude-antislop.fish',
-      content: `# Fish completion for claude-antislop
-complete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory memory-write memory-search memory-sync scan templates code-quality-check status"
-`
+      content: '# Fish completion for claude-antislop\ncomplete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory memory-write memory-search memory-sync scan templates code-quality-check status"\n'
     }
   };
 
