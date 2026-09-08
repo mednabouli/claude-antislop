@@ -41,3 +41,12 @@ export function createResponse(data) {
     timestamp: new Date().toISOString()
   };
 }
+
+export function createSuccessResponse(data) {
+  return {
+    success: true,
+    message: 'Success',
+    data,
+    timestamp: new Date().toISOString()
+  };
+}
