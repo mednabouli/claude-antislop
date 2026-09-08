@@ -1,9 +1,8 @@
-import { ui } from './ui.mjs';
-import { join, relative } from 'path';
-import { existsSync, readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync } from 'fs';
+import { join } from 'path';
 
 export async function scan(repo, options = {}) {
-  const { output, templates } = options;
+  const { output } = options;
 
   if (!repo) {
     throw new Error('Repository path required');
