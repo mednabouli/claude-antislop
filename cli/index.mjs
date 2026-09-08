@@ -3,13 +3,10 @@
 import { initMemory } from './cli/lib/memory.mjs';
 import { learnFromGit } from './cli/lib/learn.mjs';
 import { scan } from './cli/lib/scan.mjs';
-import { listTemplates, installTemplates, previewTemplate } from './cli/lib/templates.mjs';
+import { listTemplates, installTemplates } from './cli/lib/templates.mjs';
 import { watchDirectory } from './cli/lib/watch.mjs';
 import { generateCompletion } from './cli/lib/completion.mjs';
-import { getLocale, t } from './cli/lib/i18n.mjs';
-import { formatOutput } from './cli/lib/output.mjs';
-import { exportMemory } from './cli/lib/sync.mjs';
-import { syncToDrive } from './cli/lib/sync-drive.mjs';
+import { getLocale } from './cli/lib/i18n.mjs';
 import { ui } from './cli/lib/ui.mjs';
 
 const args = process.argv.slice(2);
@@ -31,7 +28,7 @@ try {
   if (cmd === 'learn-git') {
     const repo = args[1] || process.cwd();
     const recent = parseInt(args[2]) || 30;
-    const result = await learnFromGit(repo, recent);
+    const result = learnFromGit(repo, recent);
     ui.success(result.message);
     ui.info(`Repository: ${result.data.repository}`);
     ui.info(`Period: ${result.data.period}`);
@@ -39,7 +36,7 @@ try {
 
   if (cmd === 'scan') {
     const repo = args[1] || process.cwd();
-    const result = await scan(repo);
+    const result = scan(repo);
     ui.success(result.message);
     ui.info(`Files: ${result.data.files}`);
   }
@@ -47,13 +44,13 @@ try {
   if (cmd === 'templates') {
     const subcmd = args[1];
     if (subcmd === 'list') {
-      const result = await listTemplates();
+      const result = listTemplates();
       ui.success(result.message);
     }
     if (subcmd === 'install') {
       const path = args[2];
       const output = args[3] || './templates';
-      const result = await installTemplates([path], { output });
+      const result = installTemplates([path], { output });
       ui.success(result.message);
     }
   }
@@ -74,16 +71,6 @@ try {
     const loc = args[1] || 'en';
     const result = getLocale(loc);
     ui.info(`Locale: ${result.locale} (${result.name})`);
-  }
-
-  if (cmd === 'export-memory') {
-    const result = await exportMemory();
-    ui.success(result.message);
-  }
-
-  if (cmd === 'sync-drive') {
-    const result = await syncToDrive({}, { folder: 'claude-antislop' });
-    ui.success(result.message);
   }
 
   if (cmd === 'status') {
