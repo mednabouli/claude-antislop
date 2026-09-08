@@ -9,10 +9,18 @@
     "sourceType": "module"
   },
   "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     "no-console": "off",
-    "prefer-const": "warn",
+    "prefer-const": "error",
     "no-var": "error",
-    "no-undef": "error"
-  }
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "no-unused-expressions": "error",
+    "no-implicit-coercion": "error",
+    "max-params": ["warn", 4],
+    "max-statements": ["warn", 50],
+    "complexity": ["warn", 10]
+  },
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "*.test.js"]
 }
