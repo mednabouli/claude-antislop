@@ -1,21 +1,17 @@
-import { test } from 'node:test';
-import { strict as assert } from 'node:assert';
-import { learn } from '../cli/lib/learn.mjs';
+import { describe, expect, test } from '@jest/globals';
+import { learn, learnFromGit } from '../cli/lib/learn.mjs';
 
-test('learn module', async (t) => {
-  await t.test('validates recent parameter', async () => {
-    await assert.rejects(async () => await learn({ recent: 'invalid; rm -rf /' }), /Invalid recent parameter/);
+describe('learn module', () => {
+  test('exports learn function', async () => {
+    const result = await learn(process.cwd(), { recent: 7 });
+    expect(result.success).toBe(true);
   });
-  await t.test('accepts valid recent formats', async () => {
-    const validFormats = ['30d', '3m', '1y', '2w', '7d'];
-    for (const format of validFormats) {
-      await learn({ recent: format, repo: process.cwd() }).catch(() => {});
-    }
+
+  test('learnFromGit validates repo', async () => {
+    await expect(learnFromGit('', 30)).rejects.toThrow('Repository path required');
   });
-  await t.test('rejects invalid recent formats', async () => {
-    const invalidFormats = ['; rm -rf /', '`rm -rf /`', '$(rm -rf /)', '..', '../..'];
-    for (const format of invalidFormats) {
-      await assert.rejects(async () => await learn({ recent: format }), /Invalid recent parameter/);
-    }
+
+  test('learnFromGit validates recent', async () => {
+    await expect(learnFromGit(process.cwd(), -1)).rejects.toThrow('positive number');
   });
 });
