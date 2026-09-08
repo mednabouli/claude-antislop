@@ -20,13 +20,14 @@ export async function exportMemory(options = {}) {
   return {
     success: true,
     message: 'Memory exported',
-    data: { count, files }
+    data: { count, files, length: count }
   };
 }
 
 export function collectMemory() {
   return { 
     success: true, 
+    standards: [],
     data: { 
       files: [],
       standards: [],
