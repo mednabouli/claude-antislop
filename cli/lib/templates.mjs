@@ -35,10 +35,6 @@ export async function installTemplates(paths, options = {}) {
     throw new Error('Template paths required');
   }
 
-  if (!output) {
-    throw new Error('Output directory required');
-  }
-
   const installed = [];
   for (const p of paths) {
     if (!p.includes('/')) {
@@ -50,7 +46,7 @@ export async function installTemplates(paths, options = {}) {
   return {
     success: true,
     message: 'Templates installed',
-    data: { installed, output, count: installed.length }
+    data: { installed, output: output || './templates', count: installed.length }
   };
 }
 
