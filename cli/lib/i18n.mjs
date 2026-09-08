@@ -58,3 +58,7 @@ export function t(key, params = {}, locale = 'en') {
 export function getSupportedLocales() {
   return Object.keys(LOCALES);
 }
+
+export function initializeI18n(locale = 'en') {
+  return { locale, t: (key, params) => t(key, params, locale) };
+}
