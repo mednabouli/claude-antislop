@@ -66,3 +66,7 @@ export function initializeI18n(locale = 'en') {
 export function isNo(value) {
   return value === 'no' || value === 'n' || value === false;
 }
+
+export function isYes(value) {
+  return value === 'yes' || value === 'y' || value === true;
+}
