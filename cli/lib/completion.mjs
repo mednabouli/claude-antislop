@@ -5,7 +5,7 @@ export function generateCompletion(shell) {
       content: `# Claude Antislop Bash Completion
 _complete_claude_antislop() {
   local cur="\${COMP_WORDS[COMP_CWORD]}"
-  COMPREPLY=( $(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "\${cur}") )
+  COMPREPLY=( \$(compgen -W "init-memory memory-write memory-search memory-sync scan templates code-quality-check status" -- "\${cur}") )
 }
 complete -F _complete_claude_antislop claude-antislop
 `
@@ -38,7 +38,7 @@ esac
     },
     fish: {
       file: 'claude-antislop.fish',
-      content: `# Claude Antislop Fish Completion
+      content: `# Fish completion for claude-antislop
 complete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory memory-write memory-search memory-sync scan templates code-quality-check status"
 `
     }
@@ -48,19 +48,7 @@ complete -c claude-antislop -n "not __fish_seen_subcommand_from" -a "init-memory
     throw new Error('Unsupported shell');
   }
 
-  if (shell === 'bash') {
-    return { success: true, file: configs.bash.file, content: configs.bash.content };
-  }
-
-  if (shell === 'zsh') {
-    return { success: true, file: configs.zsh.file, content: configs.zsh.content };
-  }
-
-  if (shell === 'fish') {
-    return { success: true, file: configs.fish.file, content: configs.fish.content };
-  }
-
-  return { success: false, error: 'Shell not supported' };
+  return configs[shell].content;
 }
 
 export function getCompletionScript(shell) {
