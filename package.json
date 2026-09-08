@@ -10,7 +10,8 @@
     "lint": "eslint cli/ tests/ --ext .mjs,.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "build": "echo 'Build complete'",
-    "benchmark": "echo 'Running benchmarks' && node tests/benchmarks/run.mjs"
+    "benchmark": "echo 'Running benchmarks' && node tests/benchmarks/run.mjs",
+    "release": "semantic-release"
   },
   "engines": {
     "node": ">=24.0.0"
@@ -32,6 +33,11 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-plugin-jest": "^27.9.0",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "semantic-release": "^21.1.2",
+    "@semantic-release/commit-analyzer": "^10.0.4",
+    "@semantic-release/release-notes-generator": "^11.0.7",
+    "@semantic-release/npm": "^11.0.2",
+    "@semantic-release/github": "^9.2.6"
   }
 }
