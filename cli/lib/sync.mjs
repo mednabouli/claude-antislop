@@ -11,15 +11,16 @@ export async function exportMemory(options = {}) {
   }
 
   const files = ['standards.md', 'patterns.md'];
+  const count = files.length;
 
   if (json) {
-    return JSON.stringify({ success: true, data: { files } }, null, 2);
+    return JSON.stringify({ success: true, data: { files, count } }, null, 2);
   }
 
   return {
     success: true,
     message: 'Memory exported',
-    data: { count: files.length, files }
+    data: { count, files }
   };
 }
 
