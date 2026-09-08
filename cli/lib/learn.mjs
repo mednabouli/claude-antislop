@@ -22,19 +22,13 @@ export async function learnFromGit(repo, recent = 30) {
 export async function learn(options = {}) {
   const { repo, recent = '30d' } = options;
   
-  if (!repo) {
-    throw new Error('Repository required');
-  }
-
-  const recentDays = parseInt(recent.replace('d', '')) || 30;
-  
   return {
     success: true,
     message: 'Git learning complete',
     data: {
-      repo,
-      repository: repo,
-      period: `${recentDays}d`,
+      repo: repo || process.cwd(),
+      repository: repo || process.cwd(),
+      period: recent,
       patterns: ['commits', 'branches', 'diffs']
     }
   };
