@@ -55,6 +55,14 @@ export function memorySearch(query, options = {}) {
 }
 
 export function memoryWrite(file, content) {
+  if (!file) {
+    throw new Error('File path required');
+  }
+
+  if (!content) {
+    throw new Error('Content required');
+  }
+
   return writeMemory(file, content);
 }
 
