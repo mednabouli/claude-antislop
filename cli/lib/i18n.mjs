@@ -54,3 +54,7 @@ export function t(key, params = {}, locale = 'en') {
 
   return text;
 }
+
+export function getSupportedLocales() {
+  return Object.keys(LOCALES);
+}
